@@ -37,6 +37,8 @@ class Camera(Emitter):
         fps: Union[int, None] = 10,
         verbose: bool = False,
         size: Union[list, tuple, None] = None,
+        flipX: bool = False,
+        flipY: bool = False,
         emitterIsEnabled: bool = False,
         backgroundIsEnabled: bool = False,
         queueModeEnabled: bool = False,
@@ -60,6 +62,8 @@ class Camera(Emitter):
         self.fps = fps
         self.verbose = verbose
         self.size = size
+        self.flipX = flipX
+        self.flipY = flipY
         self.backgroundIsEnabled = backgroundIsEnabled
         self.background = None
         self.processing = processing
@@ -82,9 +86,9 @@ class Camera(Emitter):
 
         self.emitterIsEnabled = emitterIsEnabled
         self.device = None
-        self.thread = Thread(target=self.run, args=())
+        self.thread = Thread(target=self.run, name="camera-thread", daemon=True)
 
-        self.runningEvent = Event()
+        self.running = Event()
         self.pauseEvent = Event()
         self.readEvent = Event()
         self.readLock = Lock()
@@ -114,6 +118,7 @@ class Camera(Emitter):
         size: Union[tuple, list, None] = None,
     ):
         """It creates a custom background as numpy array (image) with a text message.
+
         Args:
             text: message to be displayed on the center of the background.
             font: cv2 font family
@@ -150,6 +155,7 @@ class Camera(Emitter):
         size: Union[tuple, list, None] = None,
     ):
         """It enables background as a frame.
+
         Args:
             text: message to be displayed on the center of the background.
             font: cv2 font family
@@ -222,6 +228,13 @@ class Camera(Emitter):
         """It preprocess the frame."""
         if self.size is not None:
             frame = cv2.resize(frame, self.size[:2])
+
+        if self.flipX:
+            frame = cv2.flip(frame, 1)
+
+        if self.flipY:
+            frame = cv2.flip(frame, 0)
+            
         return frame
 
     def process(self, frame) -> np.ndarray:
@@ -253,7 +266,9 @@ class Camera(Emitter):
                 self.frame64 = self.encoder.encode(self.frame)
 
         self.readEvent.set()
-        self.readLock.release()
+
+        if self.readLock.locked():
+            self.readLock.release()
 
     def read(self, timeout: Union[float, int, None] = 0) -> Union[None, np.ndarray]:
         """It returns a frame or a background.
@@ -276,9 +291,9 @@ class Camera(Emitter):
     def run(self):
         """It runs the read loop."""
         self.loadDevice()
-        self.runningEvent.set()
+        self.running.set()
 
-        while self.runningEvent.is_set():
+        while self.running.is_set():
             if self.hasDevice():
                 self.update()
             else:
@@ -289,12 +304,6 @@ class Camera(Emitter):
         self.queueModeEnabled = False
         self.readEvent.set()
         self.device.release()
-
-    def stop(self):
-        """It stops the read loop."""
-        self.resume()
-        self.runningEvent.clear()
-        self.thread.join()
 
     def getName(self) -> str:
         """It returns the name of the current device."""
@@ -325,6 +334,16 @@ class Camera(Emitter):
             self.defaultDelay = 1 / self.fps
             self.delay = self.defaultDelay
 
+    def stop(self):
+        """It stops the read loop."""
+        self.resume()
+
+        if self.readLock.locked():
+            self.readLock.release()
+
+        if self.running.is_set():
+            self.running.clear()
+            self.thread.join()
 
 class Cameras:
     """A class for manage multiple threaded cameras.

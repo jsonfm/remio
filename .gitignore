@@ -35,6 +35,7 @@ nosetests.xml
 .pydevproject
 
 docs/_build
+site/
 venv*
 .eggs
 .ropeproject

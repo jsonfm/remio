@@ -14,7 +14,6 @@ const image = document.getElementById('image');
     }
 }
 
-
 socket.on('connect', () => {
     console.log('conectado...')
 })
@@ -24,6 +23,6 @@ socket.on('disconnect', () => {
 })
 
 socket.on('stream', (data) => {
-    b64 = addMIMEjpeg(data);
+    b64 = addMIMEjpeg(data['webcam']);
     image.src = b64;
 });

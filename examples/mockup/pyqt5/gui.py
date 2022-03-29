@@ -30,24 +30,22 @@ class CustomMockup(QMainWindow, Mockup):
         uic.loadUi('gui.ui', self)
 
         self.image = QImageLabel(self.qimage)
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.updateVideo)
-        self.timer.start(100)
-
-        self.updatePortsList(self.serial.getListOfPorts())
         self.serial.on('ports-update', self.updatePortsList)
         self.pauseBtn.clicked.connect(self.updateVideoControl)
         self.streamBtn.clicked.connect(self.updateSocket)
+        self.updatePortsList(self.serial.getListOfPorts())
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.updateVideo)
+        self.timer.start(1000/20)
 
     def updateSocket(self, status):
         if status:
             try:
-                self.socket.connect('http://localhost:5000')
+                self.socket.connect('http://localhost:5000', wait=False)
             except Exception as e:
                 print("socket:: ", e)
         else:
             self.socket.disconnect()
-        print('socket: ', status)
 
     def updatePortsList(self, ports:list):
         self.devices.clear()
@@ -55,28 +53,29 @@ class CustomMockup(QMainWindow, Mockup):
 
     def updateVideo(self):
         frame = self.camera.getFrame64Of('webcam')
+        image = self.camera.getFrameOf('webcam')
+        self.image.setImage(image)
         if self.socket.connected:
-            self.socket.emit('stream', frame)
+            self.socket.emit('stream', {'webcam': frame})
 
     def updateVideoControl(self, status):
         if status:
             self.camera['webcam'].pause()
-            self.timer.stop()
         else:
-            self.timer.start()
             self.camera['webcam'].resume()
 
     def closeEvent(self, e):
         self.stop()
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     experiment = CustomMockup(
         serverSettings=serverSettings,
-        streamServer=streamSettings,
+        streamSettings=streamSettings,
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
     )
-    experiment.start(camera=True, serial=True)
+    experiment.start(camera=True, serial=True, streamer=True)
     experiment.show()
     sys.exit(app.exec_())

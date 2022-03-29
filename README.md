@@ -7,7 +7,7 @@
 
 </div>
 
-A library for managing concurrent io, cv2, and pyserial socket processes. Useful for making robots or devices with Arduinos and Raspberry Pi.
+A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi.
 
 ## Install
 Clone the repository:

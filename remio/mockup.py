@@ -10,21 +10,32 @@ class Mockup:
     Args:
         cameraSettings:
         serialSettings:
-        streamSettings: 
+        streamSettings:
     """
-    def __init__(self, 
-            cameraSettings: dict = {},
-            serialSettings: dict = {},
-            serverSettings: dict = {},
-            streamSettings: dict = {},
-            *args, 
-            **kwargs):
+
+    def __init__(
+        self,
+        cameraSettings: dict = {},
+        serialSettings: dict = {},
+        serverSettings: dict = {},
+        streamSettings: dict = {},
+        *args,
+        **kwargs
+    ):
         self.camera = Cameras(devices=cameraSettings)
         self.serial = Serials(devices=serialSettings)
         self.socket = CustomSocketIO(**serverSettings)
-        self.streamer = SocketStreamer(socket=self.socket, reader=self.camera.read, **streamSettings)
+        self.streamer = SocketStreamer(
+            socket=self.socket, reader=self.camera.read, **streamSettings
+        )
 
-    def start(self, camera: bool = False, serial: bool = False, socket: bool = False, streamer: bool = False):
+    def start(
+        self,
+        camera: bool = False,
+        serial: bool = False,
+        socket: bool = False,
+        streamer: bool = False,
+    ):
         """It starts differents programs.
 
         Args:

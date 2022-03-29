@@ -2,33 +2,36 @@ import os
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from numpy import broadcast
-    
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app)
 
 # path = os.path.dirname(os.path.abspath(__file__))
 # index = os.path.join(path, 'public', 'index.html')
 # print('index: ', index)
 
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@socketio.on('connect')
+@socketio.on("connect")
 def connect(ssid):
-    print('Bienvenido: ', ssid)
+    print("Bienvenido: ", ssid)
 
-@socketio.on('disconnect')
+
+@socketio.on("disconnect")
 def disconnect():
-    print('Desconectando...')
+    print("Desconectando...")
 
-@socketio.on('stream')
+
+@socketio.on("stream")
 def stream(frame):
-    emit('stream', frame, broadcast=True)
+    emit("stream", frame, broadcast=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     socketio.run(app, debug=True)

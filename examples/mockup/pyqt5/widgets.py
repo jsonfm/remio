@@ -8,15 +8,18 @@ from threading import Timer
 
 class QImageLabel(QLabel):
     """Custom QLabel with methods to display numpy arrays (opencv images)."""
-    def __init__(self,qlabel, *args, **kwargs):
+
+    def __init__(self, qlabel, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.qlabel = qlabel
 
-    def arrayToPixmap(self, array: np.ndarray = None, width: int = 480, height: int = 600):
+    def arrayToPixmap(
+        self, array: np.ndarray = None, width: int = 480, height: int = 600
+    ):
         """It converts an image array to a QPixmap format.
 
         Args:
-            array: image array 
+            array: image array
             width: scaled width
             width: scaled height
         """
@@ -28,7 +31,9 @@ class QImageLabel(QLabel):
         qpixmap = QPixmap.fromImage(qimage)
         return qpixmap
 
-    def setImage(self, array: np.ndarray = None, scaledWidth: int = 480, scaledHeight: int = 600):
+    def setImage(
+        self, array: np.ndarray = None, scaledWidth: int = 480, scaledHeight: int = 600
+    ):
         """It sets and image array over the label as QPixmap, to be displayed.
 
         Args:
@@ -38,7 +43,9 @@ class QImageLabel(QLabel):
         """
         try:
             if array is not None:
-                qimage = self.arrayToPixmap(array, width=scaledWidth, height=scaledHeight)
+                qimage = self.arrayToPixmap(
+                    array, width=scaledWidth, height=scaledHeight
+                )
                 self.qlabel.setPixmap(qimage)
         except Exception as e:
-            print('QImageLabel:: ', e)
+            print("QImageLabel:: ", e)

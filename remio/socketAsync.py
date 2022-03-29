@@ -11,16 +11,18 @@ STOP_MACHINE = "stop"
 
 class CustomAsyncSocketIO(AsyncClient):
     """
-    :param identifier: 
+    :param identifier:
     """
 
-    def __init__(self, 
-            identifier: str = "default", 
-            serverAddress: str = "", 
-            manager: str = None,
-            streamingRoute: str = None, 
-            *args, 
-            **kwargs):
+    def __init__(
+        self,
+        identifier: str = "default",
+        serverAddress: str = "",
+        manager: str = None,
+        streamingRoute: str = None,
+        *args,
+        **kwargs
+    ):
         self.serverAddress = serverAddress
         self.io = AsyncClient(*args, **kwargs)
         self.thread = threading.Thread(target=self.run, name="SocketIO-Thread")
@@ -34,7 +36,7 @@ class CustomAsyncSocketIO(AsyncClient):
 
     def write(self, data, route: Optional[str] = None):
         self.io.emit(route, data)
-    
+
     async def run(self):
         while self.running.is_set():
             pass

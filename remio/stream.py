@@ -23,14 +23,16 @@ class MJPEGEncoder:
                         speeds up encoding by 4-5% for a minor loss in quality
 
     """
+
     def __init__(
-        self, 
+        self,
         quality: int = 85,
-        colorspace: str = 'rgb',
-        colorsubsampling: str = '444',
+        colorspace: str = "rgb",
+        colorsubsampling: str = "444",
         fastdct: bool = True,
-        *args, 
-        **kwargs):
+        *args,
+        **kwargs,
+    ):
         self.quality = quality
         self.colorspace = colorspace
         self.colorsubsampling = colorsubsampling
@@ -39,9 +41,9 @@ class MJPEGEncoder:
     def setParams(
         self,
         quality: int = 85,
-        colorspace: str = 'rgb',
-        colorsubsampling: str = '444',
-        fastdct: bool = True
+        colorspace: str = "rgb",
+        colorsubsampling: str = "444",
+        fastdct: bool = True,
     ):
         """Updates the encoder params.
 
@@ -55,14 +57,16 @@ class MJPEGEncoder:
                                     '444', '422', '420', '440', '411', 'Gray'.
             fastdct: If True, use fastest DCT method;
                             speeds up encoding by 4-5% for a minor loss in quality
-            
+
         """
         self.quality = quality
         self.colorspace = colorspace
         self.colorsubsampling = colorsubsampling
         self.fastdct = fastdct
 
-    def encode(self, frame: np.ndarray = None, base64: bool = True) -> Union[bytes, str]:
+    def encode(
+        self, frame: np.ndarray = None, base64: bool = True
+    ) -> Union[bytes, str]:
         """Encodes an array of images in JPEG format and, if possible, convert it to base64.
 
         Args:
@@ -83,7 +87,7 @@ class MJPEGEncoder:
                 self.quality,
                 self.colorspace,
                 self.colorsubsampling,
-                self.fastdct
+                self.fastdct,
             )
 
             if base64:
@@ -107,17 +111,19 @@ class SocketStreamer:
         reader: a read frame function.
         endpoint: route to stream the video.
         fps: fps streaming speed.
-    
+
     """
+
     def __init__(
-            self,
-            socket=None, 
-            reader: Callable = None, 
-            endpoint: str = '', 
-            fps: int = 10,
-            enabled: bool = True,
-            *args, 
-            **kwargs):
+        self,
+        socket=None,
+        reader: Callable = None,
+        endpoint: str = "",
+        fps: int = 10,
+        enabled: bool = True,
+        *args,
+        **kwargs,
+    ):
         self.socket = socket
         self.encoder = MJPEGEncoder(*args, **kwargs)
         self.lastFrame = None
@@ -144,13 +150,13 @@ class SocketStreamer:
     def configureSocket(self):
         """Configures autostop/autoresume stream loop for save cpu resources."""
         if self.hasSocket():
-            self.socket.on('connect', self.resume)
-            self.socket.on('disconnect', self.pause)
+            self.socket.on("connect", self.resume)
+            self.socket.on("disconnect", self.pause)
 
     def needAPause(self):
         """Controls the pause or resume of the stream loop."""
         self.pauseEvent.wait()
-        
+
     def setEnabled(self, value: bool = True):
         """Updates enabled value."""
         self.enabled = value
@@ -160,7 +166,7 @@ class SocketStreamer:
         self.reader = reader
 
     def hasReader(self):
-        """"Checks if there is an available reader function."""
+        """ "Checks if there is an available reader function."""
         return self.reader is not None
 
     def hasSocket(self):
@@ -181,7 +187,7 @@ class SocketStreamer:
             self.thread.join()
 
     def readAndStream(self, *args, **kwargs):
-        """"Reads and streams available frames."""
+        """ "Reads and streams available frames."""
         if self.hasSocket() and self.hasReader():
             frames = self.reader(*args, **kwargs)
             self.stream(frames)
@@ -199,7 +205,7 @@ class SocketStreamer:
                 try:
                     self.socket.emit(self.endpoint, frames)
                 except Exception as e:
-                    print(f'streamer:: {e}')
+                    print(f"streamer:: {e}")
                 self.streamLock.release()
 
     def run(self):
@@ -209,4 +215,3 @@ class SocketStreamer:
                 self.readAndStream()
             time.sleep(1 / self.fps)
             self.needAPause()
-

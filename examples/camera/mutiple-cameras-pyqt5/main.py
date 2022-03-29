@@ -11,13 +11,14 @@ from remio import Mockup
 
 class QImageLabel(QLabel):
     """Custom QLabel with methods to display numpy arrays (opencv images)."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def arrayToPixmap(self, array, width: int = 480, height: int = 600):
         """It converts an image array to a QPixmap format.
 
-        :param array: image array 
+        :param array: image array
         :param width: scaled width
         :param width: scaled height
         """
@@ -45,13 +46,13 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Configure Window
-        self.setWindowTitle('Camera viewer Example')
+        self.setWindowTitle("Camera viewer Example")
         self.setGeometry(100, 100, 800, 500)
 
-        self.imageLabel1 = QImageLabel('Not available image')
-        self.imageLabel2 = QImageLabel('Not available image')
+        self.imageLabel1 = QImageLabel("Not available image")
+        self.imageLabel2 = QImageLabel("Not available image")
 
-        layout =  QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.imageLabel1)
         layout.addWidget(self.imageLabel2)
 
@@ -63,19 +64,19 @@ class MainWindow(QMainWindow):
         # Configure Cameras
         self.fps = 30
         self.Mockup = Mockup(
-                cameraDevices={
-                           'webcam': 0, 
-                           'mobile': 'http://192.168.100.56:3000/video/mjpeg'
-                          }, 
-                cameraOptions={
-                        'fps': self.fps,
-                        'size': None,
-                        }
-            )
+            cameraDevices={
+                "webcam": 0,
+                "mobile": "http://192.168.100.56:3000/video/mjpeg",
+            },
+            cameraOptions={
+                "fps": self.fps,
+                "size": None,
+            },
+        )
         self.Mockup.start(camera=True)
 
         # Configure Timer
-        self.timer = QTimer()   
+        self.timer = QTimer()
         self.timer.timeout.connect(self.updateVideo)
         self.timer.start(1000 // 10)
 
@@ -87,15 +88,14 @@ class MainWindow(QMainWindow):
             if image is not None:
                 imageLabel = getattr(self, f"imageLabel{index + 1}")
                 imageLabel.setImage(image, scaledWidth=400, scaledHeight=600)
-    
 
     def closeEvent(self, event):
         """When the app is closed, all process must be stopped."""
         self.Mockup.stop()
 
 
-if __name__ == "__main__" :
-  App = QApplication(sys.argv)
-  window = MainWindow()
-  window.show()
-  sys.exit(App.exec())
+if __name__ == "__main__":
+    App = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(App.exec())

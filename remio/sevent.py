@@ -5,15 +5,16 @@ class Emitter:
 
     Example usage::
         callback = lambda message: print(message)
-        event = Emitter() 
+        event = Emitter()
         event.on('ready', callback)
         event.emit('ready', 'Finished!')
     """
+
     def __init__(self, emitterIsEnabled: bool = True, *args, **kwargs):
         self.callbacks = None
         self.emitterIsEnabled = emitterIsEnabled
 
-    def on(self, eventName:str="", callback=None):
+    def on(self, eventName: str = "", callback=None):
         """It sets the callback functions.
         Args:
             eventName: name of the event
@@ -27,7 +28,7 @@ class Emitter:
         else:
             self.callbacks[eventName] = [callback]
 
-    def emit(self, eventName:str="", *args, **kwargs):
+    def emit(self, eventName: str = "", *args, **kwargs):
         """It emits an event, and calls the corresponding callback function.
 
         Args:
@@ -42,9 +43,9 @@ class Emitter:
                         else:
                             callback()
 
-    def clearEvent(self, eventName:str):
+    def clearEvent(self, eventName: str):
         """It clears the callbacks associated to a specific event name.
-        
+
         Args:
             eventName: name of the event.
         """
@@ -58,7 +59,7 @@ class Emitter:
     def disableEvents(self):
         """It disables emit function."""
         self.emitterIsEnabled = False
-    
+
     def enableEvents(self):
         """It enables emit function."""
         self.emitterIsEnabled = True

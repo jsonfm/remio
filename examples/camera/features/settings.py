@@ -1,4 +1,4 @@
 cameraOptions = {
-    'fps': 10,
-    'reconnectDelay': 2,
+    "fps": 10,
+    "reconnectDelay": 2,
 }

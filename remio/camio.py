@@ -26,7 +26,7 @@ class Camera(Emitter):
 
     Example usage:
         camera = Camera(src=0)
-        camera.on('frame-ready', lambda frame: print('frame is ready:', type(frame))) 
+        camera.on('frame-ready', lambda frame: print('frame is ready:', type(frame)))
     """
 
     def __init__(
@@ -45,7 +45,7 @@ class Camera(Emitter):
         queueMaxSize: int = 96,
         text: str = "Device not available",
         font: None = cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale: Union[int, float] = .5,
+        fontScale: Union[int, float] = 0.5,
         fontColor: Union[tuple, list] = [255, 255, 255],
         thickness: int = 1,
         processing: Callable = None,
@@ -78,7 +78,7 @@ class Camera(Emitter):
         if self.fps is not None:
             self.delay = 1 / self.fps
         else:
-            self.delay = .1
+            self.delay = 0.1
 
         self.defaultDelay = self.delay
         self.reconnectDelay = reconnectDelay
@@ -98,11 +98,11 @@ class Camera(Emitter):
         if self.backgroundIsEnabled:
             self.enableBackground(
                 size=self.size,
-                text=text, 
+                text=text,
                 font=font,
                 fontColor=fontColor,
                 fontScale=fontScale,
-                thickness=thickness
+                thickness=thickness,
             )
 
     def __del__(self):
@@ -112,7 +112,7 @@ class Camera(Emitter):
         self,
         text: str = "Device not available",
         font: None = cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale: Union[int, float] = .5,
+        fontScale: Union[int, float] = 0.5,
         fontColor: Union[tuple, list] = [255, 255, 255],
         thickness: int = 1,
         size: Union[tuple, list, None] = None,
@@ -167,9 +167,12 @@ class Camera(Emitter):
         """
         self.backgroundIsEnabled = True
         self.background = self.createBackground(
-            text=text, font=font, fontScale=fontScale,
-            fontColor=fontColor, thickness=thickness,
-            size=size
+            text=text,
+            font=font,
+            fontScale=fontScale,
+            fontColor=fontColor,
+            thickness=thickness,
+            size=size,
         )
 
     def disableBackground(self):
@@ -186,7 +189,7 @@ class Camera(Emitter):
         """It returns processings params (kwargs)."""
         if self.processingParams is None:
             self.processingParams = {}
-        return self.processingParams 
+        return self.processingParams
 
     def hasProcessing(self):
         """It checks if a processing function is available."""
@@ -203,7 +206,7 @@ class Camera(Emitter):
         try:
             self.device = cv2.VideoCapture(self.src)
         except cv2.error as e:
-            print('Exception: ', e)
+            print("Exception: ", e)
 
     def reconnect(self):
         """It tries to reconnect with the camera device."""
@@ -234,7 +237,7 @@ class Camera(Emitter):
 
         if self.flipY:
             frame = cv2.flip(frame, 0)
-            
+
         return frame
 
     def process(self, frame) -> np.ndarray:
@@ -345,6 +348,7 @@ class Camera(Emitter):
             self.running.clear()
             self.thread.join()
 
+
 class Cameras:
     """A class for manage multiple threaded cameras.
     Args:
@@ -360,11 +364,7 @@ class Cameras:
         cameras = Cameras(devices={'camera1': 0, 'cameras2': 1})
     """
 
-    def __init__(
-            self,
-            devices: dict = {},
-            *args,
-            **kwargs):
+    def __init__(self, devices: dict = {}, *args, **kwargs):
         self.devices = {}
         if len(devices) > 0:
             for name, settings in devices.items():
@@ -459,8 +459,7 @@ class Cameras:
         """
         if asDict:
             frames = {
-                        device.getName(): device.getFrame()
-                        for device in self.devices.values()
+                device.getName(): device.getFrame() for device in self.devices.values()
             }
         else:
             frames = [device.getFrame() for device in self.devices.values()]
@@ -474,8 +473,8 @@ class Cameras:
         """
         if asDict:
             frames = {
-                        device.getName(): device.getFrame64()
-                        for device in self.devices.values()
+                device.getName(): device.getFrame64()
+                for device in self.devices.values()
             }
         else:
             frames = [device.getFrame() for device in self.devices.values()]
@@ -508,8 +507,8 @@ class Cameras:
         """
         if asDict:
             return {
-                    device.getName(): device.read(timeout=timeout)
-                    for device in self.devices.values()
+                device.getName(): device.read(timeout=timeout)
+                for device in self.devices.values()
             }
         else:
             return [device.read(timeout=timeout) for device in self.devices.values()]

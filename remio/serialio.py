@@ -8,43 +8,46 @@ from .sevent import Emitter
 
 class SerialEmitter(Emitter):
     """A custom serial class threaded and event emit based.
-    
+
     Args:
         reconnectDelay: wait time between reconnection attempts.
         maxAttempts: max read attempts.
         portsRefreshTime: time for check serial devices changes.
         emitterIsEnabled: disable on/emit events (callbacks execution)
-    
-    Events: 
+
+    Events:
         data-incoming: incoming(data: str).
         connection-status: update(status: bool).
         ports-update: list:ports
 
     """
-    def __init__(self, 
-            reconnectDelay: Union[int, float] = 1, 
-            maxAttempts: int = 10, 
-            portsRefreshTime: int = 1,
-            emitterIsEnabled: bool = True,
-            *args, 
-            **kwargs):
+
+    def __init__(
+        self,
+        reconnectDelay: Union[int, float] = 1,
+        maxAttempts: int = 10,
+        portsRefreshTime: int = 1,
+        emitterIsEnabled: bool = True,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
-        print('kwargs: ', kwargs)
-        self.port = kwargs.pop('port', None)
+        print("kwargs: ", kwargs)
+        self.port = kwargs.pop("port", None)
         self.reconnectDelay = reconnectDelay
         self.maxAttempts = maxAttempts
         self.portsRefreshTime = portsRefreshTime
         self.lastConnectionState = False
         self.attempts = 0
         self.time = 0
-        self.lastDevicesList = []        
+        self.lastDevicesList = []
         self.serial = Serial(*args, **kwargs)
-        
+
         self.thread = Thread(target=self.run, name="serial-thread", daemon=True)
         self.running = Event()
         self.pauseEvent = Event()
         self.resume()
-    
+
     def __setitem__(self, key, value):
         if self.serial.isOpen():
             self.serial.close()
@@ -101,9 +104,9 @@ class SerialEmitter(Emitter):
             self.serial.open()
 
         except Exception as e:
-            print('connection error: ',e)
+            print("connection error: ", e)
 
-    def write(self, message:str='', end='\n'):
+    def write(self, message: str = "", end="\n"):
         """It writes a message to the serial device.
 
         Args:
@@ -117,17 +120,17 @@ class SerialEmitter(Emitter):
                     message = message.encode()
                     self.serial.write(message)
             except Exception as e:
-                print('Write error: ', e)
+                print("Write error: ", e)
 
     def readData(self):
         """It will try to read incoming data."""
         try:
             data = self.serial.readline().decode().rstrip()
             if len(data) > 0:
-                self.emit('data-incoming', data)
+                self.emit("data-incoming", data)
                 return data
         except Exception as e:
-            print('Read data error: ', e)
+            print("Read data error: ", e)
             if not self.attemptsLimitReached():
                 self.attempts += 1
             else:
@@ -146,7 +149,7 @@ class SerialEmitter(Emitter):
                 actualDevicesList = self.getListOfPorts()
                 if actualDevicesList != self.lastDevicesList:
                     self.lastDevicesList = actualDevicesList
-                    self.emit('ports-update',  actualDevicesList)
+                    self.emit("ports-update", actualDevicesList)
                 self.time = 0
 
     def run(self):
@@ -155,9 +158,8 @@ class SerialEmitter(Emitter):
             t0 = time.time()
 
             if self.lastConnectionState != self.serial.isOpen():
-                self.emit('connection-status', self.serial.isOpen())
+                self.emit("connection-status", self.serial.isOpen())
                 self.lastConnectionState = self.serial.isOpen()
-
 
             if self.serial.isOpen():
                 self.readData()
@@ -193,6 +195,7 @@ class Serials:
     Args:
         devices: a list of serial devices to be controled.
     """
+
     def __init__(self, devices: dict = {}, *args, **kwargs):
         self.devices = {}
         if len(devices) > 0:
@@ -207,7 +210,7 @@ class Serials:
         """It checks if there is some serial device on list."""
         return len(self.devices) > 0
 
-    def setDevices(self, devices:list=[], *args, **kwargs):
+    def setDevices(self, devices: list = [], *args, **kwargs):
         """It updates the current serial devices list.
 
         Args:
@@ -220,11 +223,11 @@ class Serials:
 
     def startAll(self):
         """It starts all serial devices"""
-        print('Iniciado serial')
+        print("Iniciado serial")
         for device in self.devices.values():
             device.start()
 
-    def startOnly(self, name:str='default'):
+    def startOnly(self, name: str = "default"):
         """It starts only one specific serial device.
 
         Args:
@@ -237,10 +240,10 @@ class Serials:
         """It stops all serial devices running."""
         for device in self.devices.values():
             device.stop()
-    
-    def stopOnly(self, name='default'):
+
+    def stopOnly(self, name="default"):
         """It stops only one specific serial device.
-        
+
         Args:
             name: device name.
         """
@@ -280,7 +283,7 @@ class Serials:
         """It returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
-    def write(self, to: str = 'default', message: str='' , end: str = '\n'):
+    def write(self, to: str = "default", message: str = "", end: str = "\n"):
         """It writes a message to a specific serial device.
 
         Args:
@@ -291,10 +294,10 @@ class Serials:
         if to in self.devices:
             self.device[to].write(message=message, end=end)
 
-    def on(self, eventName: str="", callback=None, *args, **kwargs):
+    def on(self, eventName: str = "", callback=None, *args, **kwargs):
         """A wrapper function for use on/emit functions. It defines a specific event
         to every serial devices listed on current instance.
-        
+
         Args:
             eventName: name of the event to be signaled.
             callback: callback function
@@ -309,8 +312,7 @@ class Serials:
             # elif eventName == 'ports-update' and index == 0:
             #     f = lambda ports: callback(device.getListOfPorts())
             #     device.on(eventName, f, *args, **kwargs)
-            # if  eventName == 'ports-update':   
+            # if  eventName == 'ports-update':
             #     device.on(eventName, callback, *args, **kwargs)
             device.on(eventName, callback, *args, **kwargs)
             index += 1
-                

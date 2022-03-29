@@ -12,13 +12,14 @@ from .settings import settings
 
 class QImageLabel(QLabel):
     """Custom QLabel with methods to display numpy arrays (opencv images)."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def arrayToPixmap(self, array, width: int = 480, height: int = 600):
         """It converts an image array to a QPixmap format.
 
-        :param array: image array 
+        :param array: image array
         :param width: scaled width
         :param width: scaled height
         """
@@ -46,12 +47,12 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Configure Window
-        self.setWindowTitle('Camera viewer Example')
+        self.setWindowTitle("Camera viewer Example")
         self.setGeometry(100, 100, 500, 500)
 
-        self.imageLabel = QImageLabel('Not available image')
+        self.imageLabel = QImageLabel("Not available image")
 
-        layout =  QGridLayout()
+        layout = QGridLayout()
         layout.addWidget(self.imageLabel, 0, 0)
         widget = QWidget()
         widget.setLayout(layout)
@@ -63,7 +64,7 @@ class MainWindow(QMainWindow):
         self.camera = Camera(**settings)
 
         # Configure Timer
-        self.timer = QTimer()   
+        self.timer = QTimer()
         self.timer.timeout.connect(self.updateVideo)
         self.timer.start(1000 // self.fps)
 
@@ -78,8 +79,8 @@ class MainWindow(QMainWindow):
         self.camera.stop()
 
 
-if __name__ == "__main__" :
-  App = QApplication(sys.argv)
-  window = MainWindow()
-  window.show()
-  sys.exit(App.exec())
+if __name__ == "__main__":
+    App = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(App.exec())

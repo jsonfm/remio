@@ -1,3 +1,6 @@
+import sys
+import signal
+from threading import Event
 from .camio import Cameras
 from .serialio import Serials
 from .socketSync import CustomSocketIO
@@ -5,12 +8,13 @@ from .stream import SocketStreamer
 
 
 class Mockup:
-    """A class to manage communication.
+    """A class for manage mutltiple cameras, multiple serial devices and socketio communications.
 
     Args:
-        cameraSettings:
-        serialSettings:
-        streamSettings:
+        cameraSettings: settings for camera devices.
+        serialSettings: settings for serial devices.
+        serverSettings: settings to connect with a socketio server.
+        streamSettings: settings for stream devices.
     """
 
     def __init__(
@@ -26,8 +30,19 @@ class Mockup:
         self.serial = Serials(devices=serialSettings)
         self.socket = CustomSocketIO(**serverSettings)
         self.streamer = SocketStreamer(
-            socket=self.socket, reader=self.camera.read, **streamSettings
+            socket=self.socket, 
+            reader=self.camera.read, 
+            **streamSettings
         )
+
+        self.waitEvent = Event()
+        self.waitEvent.clear()
+
+        signal.signal(signal.SIGINT, self.softStop)
+        signal.signal(signal.SIGTERM, self.softStop)  
+
+    def __del__(self):
+        self.stop()
 
     def start(
         self,
@@ -35,6 +50,7 @@ class Mockup:
         serial: bool = False,
         socket: bool = False,
         streamer: bool = False,
+        wait: bool = True,
     ):
         """It starts differents programs.
 
@@ -43,6 +59,7 @@ class Mockup:
             serial: start serial?
             socket: start socket?
             streamer: start stream?
+            wait: block the thread who calls this function?
         """
         if camera:
             self.camera.startAll()
@@ -55,10 +72,20 @@ class Mockup:
 
         if streamer:
             self.streamer.start()
+        
+        if wait:
+            self.waitEvent.wait()
 
     def stop(self):
-        """It stops all tasks."""
+        """Stops all tasks of socketio, serial, camera and streamer threads/processes."""
         self.socket.stop()
         self.streamer.stop()
         self.camera.stopAll()
         self.serial.stopAll()
+        self.waitEvent.set()
+
+    def softStop(self, sig, frame):
+        """Stops mockup exectution when a system signal is emitted, ex. CTRL + C."""
+        print("  Mockup:: STOPING...")
+        self.stop()
+        sys.exit(0)

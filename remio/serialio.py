@@ -1,8 +1,9 @@
+import time
+import json
+from typing import Union
+from threading import Thread, Event
 from serial import Serial
 from serial.tools import list_ports
-from threading import Thread, Event
-from typing import Union
-import time
 from .sevent import Emitter
 
 
@@ -10,6 +11,7 @@ class SerialEmitter(Emitter):
     """A custom serial class threaded and event emit based.
 
     Args:
+        name: device name
         reconnectDelay: wait time between reconnection attempts.
         maxAttempts: max read attempts.
         portsRefreshTime: time for check serial devices changes.
@@ -24,19 +26,22 @@ class SerialEmitter(Emitter):
 
     def __init__(
         self,
+        name: str = "default",
         reconnectDelay: Union[int, float] = 1,
         maxAttempts: int = 10,
         portsRefreshTime: int = 1,
         emitterIsEnabled: bool = True,
+        emitAsDict: bool = True,
         *args,
         **kwargs
     ):
-        super().__init__(*args, **kwargs)
-        print("kwargs: ", kwargs)
+        super().__init__(emitterIsEnabled=emitterIsEnabled, *args, **kwargs)
+        self.name = name
         self.port = kwargs.pop("port", None)
         self.reconnectDelay = reconnectDelay
         self.maxAttempts = maxAttempts
         self.portsRefreshTime = portsRefreshTime
+        self.emitAsDict = emitAsDict
         self.lastConnectionState = False
         self.attempts = 0
         self.time = 0
@@ -53,6 +58,9 @@ class SerialEmitter(Emitter):
             self.serial.close()
         setattr(self.serial, key, value)
 
+    def isConnected(self):
+        return self.serial.isOpen()
+
     def getPort(self):
         """It returns the current port device."""
         return self.serial.port
@@ -64,6 +72,13 @@ class SerialEmitter(Emitter):
     def pause(self):
         """It pauses the read loop."""
         self.pauseEvent.clear()
+
+    def setPause(self, value: bool = True):
+        """Updates the pause/resume state."""
+        if value:
+            self.pause()
+        else:
+            self.resume()
 
     def needAPause(self):
         """It pauses or resume the read loop."""
@@ -105,8 +120,16 @@ class SerialEmitter(Emitter):
 
         except Exception as e:
             print("connection error: ", e)
+    
+    def dictToJson(self, message: dict = {}) -> str:
+        """It converts a dictionary to a json str."""
+        try:
+            return json.dumps(message)
+        except Exception as e:
+            print('Serial:: ', e)
+        return message
 
-    def write(self, message: str = "", end="\n"):
+    def write(self, message: Union[str, dict] = "", end: str = "\n", asJson: bool = False):
         """It writes a message to the serial device.
 
         Args:
@@ -116,6 +139,8 @@ class SerialEmitter(Emitter):
         if self.serial.isOpen():
             try:
                 if len(message) > 0:
+                    if asJson:
+                        message = self.dictToJson(message)                  
                     message += end
                     message = message.encode()
                     self.serial.write(message)
@@ -127,6 +152,7 @@ class SerialEmitter(Emitter):
         try:
             data = self.serial.readline().decode().rstrip()
             if len(data) > 0:
+                if self.emitAsDict: data = {self.name: data}
                 self.emit("data-incoming", data)
                 return data
         except Exception as e:
@@ -158,7 +184,9 @@ class SerialEmitter(Emitter):
             t0 = time.time()
 
             if self.lastConnectionState != self.serial.isOpen():
-                self.emit("connection-status", self.serial.isOpen())
+                status = self.serial.isOpen()
+                if self.emitAsDict: status = {self.name: status}
+                self.emit("connection-status", status)
                 self.lastConnectionState = self.serial.isOpen()
 
             if self.serial.isOpen():
@@ -190,7 +218,7 @@ class SerialEmitter(Emitter):
 
 
 class Serials:
-    """A class for manage multiple serial device at the same time.
+    """A class for manage multiple serial devices at the same time.
 
     Args:
         devices: a list of serial devices to be controled.
@@ -201,10 +229,14 @@ class Serials:
         if len(devices) > 0:
             for name, settings in devices.items():
                 if isinstance(settings, dict):
-                    self.devices[name] = SerialEmitter(**settings)
+                    self.devices[name] = SerialEmitter(name=name, **settings)
 
     def __len__(self):
         return len(self.devices)
+    
+    def __getitem__(self, key):
+        if key in self.devices:
+            return self.devices[key]
 
     def hasDevices(self):
         """It checks if there is some serial device on list."""
@@ -223,7 +255,6 @@ class Serials:
 
     def startAll(self):
         """It starts all serial devices"""
-        print("Iniciado serial")
         for device in self.devices.values():
             device.start()
 
@@ -283,16 +314,39 @@ class Serials:
         """It returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
-    def write(self, to: str = "default", message: str = "", end: str = "\n"):
+    def toJson(self, data: str = ""):
+        """Converts a string to a json."""
+        try: 
+            return json.loads(data)
+        except Exception as e:
+            # print("Serials:: ", e)
+            return data
+
+    def writeTo(self, deviceName: str = "default", message: str = "", end: str = "\n", 
+            asJson: bool = False
+        ):
         """It writes a message to a specific serial device.
 
         Args:
-            to: name of the serial device.
+            deviceName: name of the serial device.
             message: message to be written.
             end: newline character to be concated with the message.
+            asJson: transform message to a json?
         """
-        if to in self.devices:
-            self.device[to].write(message=message, end=end)
+        if deviceName in self.devices:
+            self.device[deviceName].write(message=message, end=end, asJson=asJson)
+
+    def write(self, message: dict = {}, end: str = "\n", asJson: bool = False):
+        """It writes a message given a dict with the device name and the message.
+
+        Args:
+            message: message to be written.
+            end: newline character to be concated with the message.
+            asJson: transform message to a json?
+        """
+        for deviceName, data in message.items():
+            if deviceName in self.devices:
+                self.device[deviceName].write(message=data, end=end, asJson=asJson)
 
     def on(self, eventName: str = "", callback=None, *args, **kwargs):
         """A wrapper function for use on/emit functions. It defines a specific event

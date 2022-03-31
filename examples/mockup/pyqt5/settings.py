@@ -5,7 +5,6 @@ from utils import process_image
 
 serverSettings = {
     "address": "http://localhost:5000",
-    # 'key': 'Av2ff)_(@)323123-cxs51xB.p',
 }
 
 # ------------------------- STREAM SETTINGS -----------------------------------
@@ -23,13 +22,6 @@ streamSettings = {
 
 # ------------------------- CAMERA SETTINGS ------------------------------------
 
-encoderParams = {
-    "quality": 80,
-    "colorspace": "bgr",
-    "colorsubsampling": "422",
-    "fastdct": True,
-}
-
 cameraSettings = {
     "webcam": {
         "src": 0,
@@ -42,7 +34,6 @@ cameraSettings = {
         "processing": None,
         "processingParams": {},
         "encoderIsEnable": False,
-        "encoderParams": encoderParams,
     },
 }
 
@@ -50,7 +41,7 @@ cameraSettings = {
 
 serialSettings = {
     "arduino": {
-        "port": "/dev/cu.usbserial-1460",
+        "port": "/dev/cu.usbserial-1440",
         "baudrate": 9600,
         "timeout": 1.0,
         "reconnectDelay": 5,

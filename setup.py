@@ -8,6 +8,7 @@ setup(
     license = "Apache License 2.0",
     author="Jason Macas",
     author_email="franciscomacas3@gmail.com",
+    url="https://hikki12.github.io/remio/",
     install_requires=[i.strip() for i in open("./requirements.txt").readlines()],
     keywords=[
         "OpenCV",

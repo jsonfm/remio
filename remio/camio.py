@@ -223,6 +223,13 @@ class Camera(Emitter):
         """It pauses the read loop."""
         self.pauseEvent.clear()
 
+    def setPause(self, value: bool = True):
+        """Updates the pause/resume state."""
+        if value:
+            self.pause()
+        else:
+            self.resume()
+
     def needAPause(self):
         """It pauses or resume the read loop."""
         self.pauseEvent.wait()

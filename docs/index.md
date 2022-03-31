@@ -16,7 +16,7 @@
 En el presente contexto, este software pretende agilizar la producción de dispositvos electrónicos cuya arquitectura sea afin a la siguiente propuesta:
 </div>
 <br>
-<img src="/assets/images/arch-1.png" alt="arch-1">
+<img src="./assets/images/arch-1.png" alt="arch-1">
 <div align="center"><b>Figura.</b> Arquitectura propuesta para el uso de la librería</div>
 <br>
 <div style="text-align: justify">
@@ -32,7 +32,7 @@ En el presente contexto, este software pretende agilizar la producción de dispo
 <b>`PERIFÉRICOS`</b>: Son diversos dispositivos que se pueden conectar directamente al computador.
 <br>
 <br>
-<b>`MICROCONTROLADOR`</b>: Interactúa con dipositivos de control, como pueden ser actuadores.
+<b>`SERVIDORES`</b>: Para el manejo de comunicación entre diferentes clientes.
 <hr>
 
 </div>
@@ -66,7 +66,7 @@ source venv/bin/activate
 ```
 3.- Clone el repositorio e instale el paquete:
 ```
-git clone https://github.com/Hikki12/camio && cd camio
+git clone https://github.com/Hikki12/remio && cd remio
 
 pip install -U .
 ```

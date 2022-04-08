@@ -3,7 +3,7 @@ This library is released under the Apache 2.0 License.
 
 ## Copyright Notice
 ```
-Copyright (c) 2022 Jason Macas(@Hikki12) <franciscomacas3@gmail.com>
+Copyright (c) 2022 Jason Francisco Macas Mora(@Hikki12) <franciscomacas3@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -7,15 +7,15 @@ from serial.tools import list_ports
 from .sevent import Emitter
 
 
-class SerialEmitter(Emitter):
+class Serial(Emitter):
     """A custom serial class threaded and event emit based.
 
     Args:
-        name: device name
+        name: device name.
         reconnectDelay: wait time between reconnection attempts.
         maxAttempts: max read attempts.
         portsRefreshTime: time for check serial devices changes.
-        emitterIsEnabled: disable on/emit events (callbacks execution)
+        emitterIsEnabled: disable on/emit events (callbacks execution).
 
     Events:
         data: incoming(data: str).
@@ -241,7 +241,7 @@ class Serials:
         if len(devices) > 0:
             for name, settings in devices.items():
                 if isinstance(settings, dict):
-                    self.devices[name] = SerialEmitter(name=name, **settings)
+                    self.devices[name] = Serial(name=name, **settings)
 
     def __len__(self):
         return len(self.devices)
@@ -263,7 +263,7 @@ class Serials:
         if self.hasDevices():
             self.stopAll()
         devices = list(set(devices))
-        self.devices = [SerialEmitter(port=name, *args, **kwargs) for name in devices]
+        self.devices = [Serial(port=name, *args, **kwargs) for name in devices]
 
     def startAll(self):
         """It starts all serial devices"""

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>263</height>
+    <width>526</width>
+    <height>269</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -106,7 +106,7 @@ background: rgb(27, 27, 27);
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,2,0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,2,0,0,0,0,0,0">
         <property name="spacing">
          <number>4</number>
         </property>
@@ -216,6 +216,27 @@ background: rgb(27, 27, 27);
          <widget class="QSlider" name="horizontalSlider">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn1">
+          <property name="text">
+           <string>Button 1</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn2">
+          <property name="text">
+           <string>Button 2</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn3">
+          <property name="text">
+           <string>Button 3</string>
           </property>
          </widget>
         </item>

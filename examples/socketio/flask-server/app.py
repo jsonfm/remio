@@ -8,10 +8,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app)
 
-# path = os.path.dirname(os.path.abspath(__file__))
-# index = os.path.join(path, 'public', 'index.html')
-# print('index: ', index)
-
 
 @app.route("/")
 def index():

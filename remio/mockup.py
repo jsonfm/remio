@@ -1,3 +1,5 @@
+"""Mockup base file."""
+
 import sys
 import signal
 from threading import Event
@@ -78,10 +80,10 @@ class Mockup:
 
     def stop(self):
         """Stops all tasks of socketio, serial, camera and streamer threads/processes."""
-        self.socket.stop()
-        self.streamer.stop()
         self.camera.stopAll()
         self.serial.stopAll()
+        self.streamer.stop()
+        self.socket.stop()
         self.waitEvent.set()
 
     def softStop(self, sig, frame):

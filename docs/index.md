@@ -40,9 +40,12 @@ En el presente contexto, este software pretende agilizar la producción de dispo
 Esta distribución de componentes es práctica para el desarrollo de prototipos que demandan cierta complejidad de procesamiento, como puede ser el caso de un <b>robot</b>, un algoritmo de <b>IA</b> y cualquier otra posibilidad que este al alcance de esta combinación.
 </div>
 
-## Caracteristicas
+## Módulos
+<img src="./assets/images/modules-arch.png" alt="modules">
 
-Las principales caracteristicas del software son:
+## Características
+
+Las principales características del software son:
 
 <ul>
 <li>Manejo de múltiples cámaras a través de hilos.</li>

@@ -1,21 +1,24 @@
 """Settings file."""
-from utils import process_image
+from decouple import AutoConfig
+from utils import processing
+from routes import *
 
+# ENV PATH
+config = AutoConfig(search_path="./.env")
 # ------------------------ SERVER SETTINGS ------------------------------------
 
 serverSettings = {
-    "address": "http://localhost:5000",
+    "address": config("address", default="http://localhost:3000", cast=str),
+    "request_timeout": 10,
 }
-
 # ------------------------- STREAM SETTINGS -----------------------------------
 
 streamSettings = {
-    "endpoint": "stream",
-    "mode": "auto",
-    "quality": 70,
-    "fps": 12,
+    "endpoint": STREAM_CLIENT_SERVER,
+    "quality": 30,
+    "fps": 10,
     "colorspace": "bgr",
-    "colorsubsampling": "444",
+    "colorsubsampling": "422",
     "fastdct": True,
     "enabled": True,
 }
@@ -26,12 +29,12 @@ cameraSettings = {
     "webcam": {
         "src": 0,
         "fps": None,
-        "size": [600, 400],
+        "size": [320, 240],
         "flipX": True,
         "flipY": False,
         "emitterIsEnabled": False,
         "backgroundIsEnabled": True,
-        "processing": None,
+        "processing": processing,
         "processingParams": {},
         "encoderIsEnable": False,
     },

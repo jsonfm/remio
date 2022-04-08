@@ -31,7 +31,7 @@
                 <div class="container">
                     <div class="navbar-brand">
                         <a class="navbar-item" href="../">
-                            <img src="../images/bulma.png" alt="Logo">
+                            REMOTE LAB
                         </a>
                         <span class="navbar-burger burger" data-target="navbarMenu">
                             <span></span>
@@ -63,18 +63,18 @@
                             <img src="https://picsum.photos/800/600/?random" alt="Description" id="image">
                         </figure>
                     </div>
-                    <div class="column is-6 is-offset-1">
+                    <div class="column is-6 is-offset-1 box">
                         <h1 class="title is-2">
-                            Superhero Scaffolding
+                            Here, your controls
                         </h1>
                         <h2 class="subtitle is-4">
                             Let this cover page describe a product or service.
                         </h2>
                         <br>
                         <p class="has-text-centered">
-                            <a class="button is-medium is-info is-outlined">
+                            <button class="button is-medium is-info is-outlined">
                                 Learn more
-                            </a>
+                            </button>
                         </p>
                     </div>
                 </div>
@@ -92,8 +92,9 @@
         </div>
     </section>
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
-    <script  src="{{ url_for('static', filename='js/bulma.js') }}"></script>
-    <script  src="{{ url_for('static', filename='js/mockup.js') }}"></script>
+    <script src="../static/js/mockup.js"></script>
+    <!-- <script  src="{{ url_for('static', filename='js/bulma.js') }}"></script>
+    <script  src="{{ url_for('static', filename='js/mockup.js') }}"></script> -->
 </body>
 
 </html>

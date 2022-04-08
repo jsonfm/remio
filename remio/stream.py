@@ -78,14 +78,16 @@ class MJPEGEncoder:
 
         """
         if frame is not None:
-            if self.colorspace == "GRAY":
-                if frame.ndim == 2:
-                    frame = frame[:, :, np.newaxis]
+            colorspace = self.colorspace
+            
+            if frame.ndim == 2:
+                frame = frame[:, :, np.newaxis]
+                colorspace = "GRAY"
 
             jpeg = simplejpeg.encode_jpeg(
                 frame,
                 self.quality,
-                self.colorspace,
+                colorspace,
                 self.colorsubsampling,
                 self.fastdct,
             )
@@ -147,15 +149,22 @@ class SocketStreamer:
         """Pauses the stream loop."""
         self.pauseEvent.clear()
 
+    def needAPause(self):
+        """Controls the pause or resume of the stream loop."""
+        self.pauseEvent.wait()
+
+    def setPause(self, value: bool = True):
+        """Updates the pause/resume state."""
+        if value:
+            self.pause()
+        else:
+            self.resume()
+
     def configureSocket(self):
         """Configures autostop/autoresume stream loop for save cpu resources."""
         if self.hasSocket():
             self.socket.on("connect", self.resume)
             self.socket.on("disconnect", self.pause)
-
-    def needAPause(self):
-        """Controls the pause or resume of the stream loop."""
-        self.pauseEvent.wait()
 
     def setEnabled(self, value: bool = True):
         """Updates enabled value."""
@@ -200,13 +209,15 @@ class SocketStreamer:
         """
         if frames is not None:
             if self.socket.connected:
-                frames = self.encoder.multipleEncode(frames)
-                self.streamLock.acquire()
-                try:
-                    self.socket.emit(self.endpoint, frames)
-                except Exception as e:
-                    print(f"streamer:: {e}")
-                self.streamLock.release()
+                if self.pauseEvent.is_set():
+                    if frames is not str:
+                        frames = self.encoder.multipleEncode(frames)
+                    self.streamLock.acquire()
+                    try:
+                        self.socket.emit(self.endpoint, frames)
+                    except Exception as e:
+                        print(f"streamer:: {e}")
+                    self.streamLock.release()
 
     def run(self):
         """Executes the stream loop."""

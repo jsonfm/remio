@@ -7,11 +7,32 @@ class CustomSocketIO(Client):
         self.address = address
 
     def stop(self):
-        self.disconnect()
+        try:
+            self.disconnect()
+        except Exception as e:
+            print("Socket:: ", e)
 
     def start(self):
         if self.address is not None:
             try:
-                self.connect(self.address, wait=False)
+                self.connect(self.address, wait=True)
             except Exception as e:
                 print("socket:: ", e)
+
+    def emit(self, *args, **kwargs):
+        try:
+            super().emit(*args, **kwargs)
+        except Exception as e:
+            print("socket:: ", e)
+    
+    def on(self, *args, **kwargs):
+        event = args[0]
+        handler = args[1]
+        if event == "connection":
+            super().on("connect", handler)
+            super().on("disconnect", handler)
+        else:
+            super().on(*args, **kwargs)
+    
+    def isConnected(self):
+        return not self.connected

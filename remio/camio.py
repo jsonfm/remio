@@ -195,7 +195,7 @@ class Camera(Emitter):
         """It checks if a processing function is available."""
         return self.processing is not None
 
-    def hasDevice(self) -> bool:
+    def isConnected(self) -> bool:
         """It checks if a camera device is available."""
         if self.device is not None:
             return self.device.isOpened()
@@ -247,8 +247,8 @@ class Camera(Emitter):
 
         return frame
 
-    def process(self, frame) -> np.ndarray:
-        """It execute the processing function."""
+    def process(self, frame: np.ndarray = None) -> np.ndarray:
+        """It executes the processing function."""
         if self.hasProcessing():
             kwargs = self.getProcessingParams()
             frame = self.processing(frame, **kwargs)
@@ -266,14 +266,14 @@ class Camera(Emitter):
             self.frame = self.process(frame)
 
             if self.emitterIsEnabled:
-                self.emit("frame-ready", self.frame)
+                self.emit("frame-ready", {self.name: self.frame})
                 self.emit("frame-available", self.name)
 
             if self.queueModeEnabled:
                 self.queue.put(self.frame)
 
-            if self.encoderIsEnabled:
-                self.frame64 = self.encoder.encode(self.frame)
+            # if self.encoderIsEnabled:
+            #     self.frame64 = self.encoder.encode(self.frame)
 
         self.readEvent.set()
 
@@ -286,7 +286,7 @@ class Camera(Emitter):
         Args:
             timeout: max time in seconds to lock operation
         """
-        if self.hasDevice():
+        if self.isConnected():
             while self.queueModeEnabled:
                 return self.queue.get(timeout=timeout)
             return self.frame
@@ -304,7 +304,7 @@ class Camera(Emitter):
         self.running.set()
 
         while self.running.is_set():
-            if self.hasDevice():
+            if self.isConnected():
                 self.update()
             else:
                 self.reconnect()
@@ -367,8 +367,9 @@ class Cameras:
         emitterIsEnabled: disable on/emit events (callbacks execution)
         enableBackground: if some error is produced with the camera it will display
                                 a black frame with a message.
-    Example usage::
-        cameras = Cameras(devices={'camera1': 0, 'cameras2': 1})
+                                
+    Example usage:
+        cameras = Cameras(devices={'camera1': {'src': 0}, 'cameras2': {'src': 1}})
     """
 
     def __init__(self, devices: dict = {}, *args, **kwargs):

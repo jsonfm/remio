@@ -18,9 +18,9 @@ class SerialEmitter(Emitter):
         emitterIsEnabled: disable on/emit events (callbacks execution)
 
     Events:
-        data-incoming: incoming(data: str).
-        connection-status: update(status: bool).
-        ports-update: list:ports
+        data: incoming(data: str).
+        connection: update(status: bool).
+        ports: list:ports
 
     """
 
@@ -59,12 +59,24 @@ class SerialEmitter(Emitter):
         setattr(self.serial, key, value)
 
     def isConnected(self):
+        """It checks if the serial port is open."""
         return self.serial.isOpen()
 
     def getPort(self):
         """It returns the current port device."""
         return self.serial.port
 
+    def setPort(self, port: str = None):
+        """It updates the port device value."""
+        if port is not None:
+            self.serial.close()
+            self.serial.port = port
+            self.connect()
+        
+    def restorePort(self):
+        """Restores the default serial port."""
+        self.setPort(self.port)
+    
     def resume(self):
         """It resumes the read loop."""
         self.pauseEvent.set()
@@ -153,7 +165,7 @@ class SerialEmitter(Emitter):
             data = self.serial.readline().decode().rstrip()
             if len(data) > 0:
                 if self.emitAsDict: data = {self.name: data}
-                self.emit("data-incoming", data)
+                self.emit("data", data)
                 return data
         except Exception as e:
             print("Read data error: ", e)
@@ -175,7 +187,7 @@ class SerialEmitter(Emitter):
                 actualDevicesList = self.getListOfPorts()
                 if actualDevicesList != self.lastDevicesList:
                     self.lastDevicesList = actualDevicesList
-                    self.emit("ports-update", actualDevicesList)
+                    self.emit("ports", actualDevicesList)
                 self.time = 0
 
     def run(self):
@@ -186,7 +198,7 @@ class SerialEmitter(Emitter):
             if self.lastConnectionState != self.serial.isOpen():
                 status = self.serial.isOpen()
                 if self.emitAsDict: status = {self.name: status}
-                self.emit("connection-status", status)
+                self.emit("connection", status)
                 self.lastConnectionState = self.serial.isOpen()
 
             if self.serial.isOpen():
@@ -359,14 +371,14 @@ class Serials:
         index = 0
         for device in self.devices.values():
             f = None
-            # if eventName =='data-incoming':
+            # if eventName =='data':
             #     f = lambda data: callback(device.getPort(), data)
-            # elif eventName == 'connection-status':
+            # elif eventName == 'connection':
             #     f = lambda status: callback(device.getPort(), status)
-            # elif eventName == 'ports-update' and index == 0:
+            # elif eventName == 'ports' and index == 0:
             #     f = lambda ports: callback(device.getListOfPorts())
             #     device.on(eventName, f, *args, **kwargs)
-            # if  eventName == 'ports-update':
+            # if  eventName == 'ports':
             #     device.on(eventName, callback, *args, **kwargs)
             device.on(eventName, callback, *args, **kwargs)
             index += 1

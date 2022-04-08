@@ -27,7 +27,7 @@ ui_file = os.path.join(ui_path, "gui.ui")
 
 
 class CustomMockup(QMainWindow, Mockup):
-    """A class for manage a mockup."""
+    """A class for manage a mockup with a local GUI."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("gui.ui", self)
@@ -39,69 +39,80 @@ class CustomMockup(QMainWindow, Mockup):
         """Configures buttons events."""
         self.image = QImageLabel(self.qimage)
         self.pauseBtn.clicked.connect(lambda value: self.updateVideoPauseState(value))
-        self.ledSerial.clicked.connect(lambda value: self.updateSerialPort(value))
+        self.streamBtn.clicked.connect(lambda value: self.streamer.setPause(value))
+        self.ledSerial.clicked.connect(lambda value: self.reconnectSerial(value))
+        self.ledSocket.clicked.connect(lambda value: self.reconnectSocket(value))
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateVideo)
-        self.timer.start(1000 // 12) # 1000 / FPS
+        self.timer.start(1000 // 10) # 1000 // FPS
 
     def configureSerial(self):
         """Configures serial on/emit events."""
-        self.serial.on("ports-update", self.serialPortsUpdate)
-        self.serial.on("connection-status", self.serialConnectionStatus)
-        self.serial.on("data-incoming", self.serialDataIncoming)
+        self.serial.on("connection", self.serialConnectionStatus)
+        self.serial.on("ports", self.serialPortsUpdate)
+        self.serial.on("data", self.serialDataIncoming)
         self.serialPortsUpdate(self.serial.getListOfPorts())
 
     def configureSocket(self):
         """Configures socket on/emit events."""
-        self.socket.on("connect", self.socketConnectionStatus)
-        self.socket.on("disconnect", self.socketConnectionStatus)
-        self.socket.on(RECEIVE_DATA_FROM_SERVER, self.setControlVariables)
+        self.socket.on("connection", self.socketConnectionStatus)
+        self.socket.on(DATA_CLIENT_SERVER, self.setControlVariables)
 
-    def socketConnectionStatus(self, status: bool):
+    def socketConnectionStatus(self):
         """Shows the connection socket status."""
+        status = self.socket.isConnected()
         self.ledSocket.setChecked(status)
+        if status:
+            self.socket.emit(JOIN_ROOM_CLIENT, "room-x")
 
     def serialPortsUpdate(self, ports: list):
         """Sends to the server the list of serial devices."""
-        self.socket.on("serial-ports-update", ports)
+        event = {"serial": {"ports": ports}}
+        self.socket.emit(EVENT_CLIENT_SERVER, event)
         self.devices.clear()
         self.devices.addItems(ports)
 
     def serialConnectionStatus(self, status: dict = {"arduino": False}):
         """Sends to the server the serial devices connection status."""
-        self.socket.on("serial-connection-status", status)
-        self.ledSerial.setChecked(status["arduino"])
+        self.ledSerial.setChecked(status.get("arduino", False))
 
-    def serialDataIncoming(self, data:str):
+    def serialDataIncoming(self, data: str):
         """Read incoming data from the serial device."""
         data = self.serial.toJson(data)
-        self.socket.on(SEND_DATA_TO_SERVER, data)
+        self.socket.on(DATA_CLIENT_SERVER, data)
 
     def setControlVariables(self, data: dict = {"arduino": {}}):
-        """Writes data coming from   the server to the serial device."""
+        """Writes data coming from the server to the serial device."""
         self.serial.write(message=data, asJson=True)
 
-    def updateSerialPort(self, value: bool):
+    def reconnectSerial(self, value: bool):
+        """Updates the serial port."""
         if value:
-            port = self.devices.currentText()
-            self.serial["arduino"].port = port
-            self.serial["arduino"].connect()
+            self.serial["arduino"].setPort(self.devices.currentText())
         else:
             self.serial["arduino"].disconnect()
         self.ledSerial.setChecked(self.serial["arduino"].isConnected())
 
+    def reconnectSocket(self, value):
+        """Updates the socketio connection."""
+        if value:
+            self.socket.start()
+        else:
+            self.socket.stop()
+        self.ledSocket.setChecked(self.socket.isConnected())
+
     def updateVideo(self):
         """Updates video image."""
-        frame = self.camera.getFrame64Of("webcam")
         image = self.camera.getFrameOf("webcam")
         self.image.setImage(image, 400, 300)
-        self.streamer.stream({"webcam": frame})
+        self.streamer.stream({"webcam": image})
 
-    def updateVideoPauseState(self, status):
+    def updateVideoPauseState(self, status: bool):
         """Update video pause status."""
         self.camera["webcam"].setPause(status)
-
+        self.streamer.setPause(status)
+    
     def closeEvent(self, e):
         """stops running threads/processes when close the windows."""
         self.stop()
@@ -117,7 +128,8 @@ if __name__ == "__main__":
     )
     experiment.start(
         camera=True, 
-        serial=True, 
+        serial=False, 
+        socket=True,
         streamer=False, 
         wait=False
     )

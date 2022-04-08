@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/examples/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/license/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/settings/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/GUIs/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/camera/camera/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
-         <lastmod>2022-03-31</lastmod>
+         <loc>https://hikki12.github.io/remio/mockup/mockup/</loc>
+         <lastmod>2022-04-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://hikki12.github.io/remio/serial/api/</loc>
+         <lastmod>2022-04-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://hikki12.github.io/remio/socketio/socketio/</loc>
+         <lastmod>2022-04-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

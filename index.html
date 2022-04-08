@@ -33,10 +33,12 @@
       
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiko:300,400,400i,700%7C&display=fallback">
-        <style>:root{--md-text-font:"Amiko";--md-code-font:""}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiko:300,400,400i,700%7CFira+Code&display=fallback">
+        <style>:root{--md-text-font:"Amiko";--md-code-font:"Fira Code"}</style>
       
     
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
     
     <script>__md_scope=new URL(".",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -129,39 +131,6 @@
       </form>
     
     
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
     
     
       <div class="md-header__source">
@@ -347,10 +316,71 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Camera
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Camera" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Camera
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="settings/" class="md-nav__link">
-        Settings
+      <a href="camera/multiple/" class="md-nav__link">
+        Multiple API
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="camera/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="camera/single/" class="md-nav__link">
+        Single API
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -372,14 +402,14 @@
       
       
         <label class="md-nav__link" for="__nav_5">
-          GUIs
+          Mockup
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="GUIs" data-md-level="1">
+      <nav class="md-nav" aria-label="Mockup" data-md-level="1">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
-          GUIs
+          Mockup
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -389,9 +419,56 @@
   
   
     <li class="md-nav__item">
-      <a href="GUIs/" class="md-nav__link">
-        Index
+      <a href="mockup/mockup/" class="md-nav__link">
+        API
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Examples" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mockup/examples/pyqt5/" class="md-nav__link">
+        PyQt5
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -420,14 +497,14 @@
       
       
         <label class="md-nav__link" for="__nav_6">
-          Camera
+          Serial
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Camera" data-md-level="1">
+      <nav class="md-nav" aria-label="Serial" data-md-level="1">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
-          Camera
+          Serial
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -437,8 +514,50 @@
   
   
     <li class="md-nav__item">
-      <a href="camera/camera/" class="md-nav__link">
-        Camera
+      <a href="serial/multiple/" class="md-nav__link">
+        Multiple API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serial/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serial/single/" class="md-nav__link">
+        Single API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serial/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -468,108 +587,12 @@
       
       
         <label class="md-nav__link" for="__nav_7">
-          Mockup
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Mockup" data-md-level="1">
-        <label class="md-nav__title" for="__nav_7">
-          <span class="md-nav__icon md-icon"></span>
-          Mockup
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="mockup/mockup/" class="md-nav__link">
-        Mockup
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_8">
-          Serial
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Serial" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
-          <span class="md-nav__icon md-icon"></span>
-          Serial
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="serial/api/" class="md-nav__link">
-        Examples
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_9">
           Socketio
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Socketio" data-md-level="1">
-        <label class="md-nav__title" for="__nav_9">
+        <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Socketio
         </label>
@@ -581,8 +604,8 @@
   
   
     <li class="md-nav__item">
-      <a href="socketio/socketio/" class="md-nav__link">
-        Socketio
+      <a href="socketio/overview/" class="md-nav__link">
+        Overview
       </a>
     </li>
   
@@ -675,7 +698,7 @@
                 
 
 <div align="center"> <h1>RemIO</h1> </div>
-<h2 id="introduccion">Introducción</h2>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Anchor link to this section for reference">⚓</a></h2>
 <div style="text-align: justify">
 <b>RemIO</b> es un módulo de python destinado al desarrollo de dispositivos IoT, basados en comunicación <i>serial</i>, comunicación socketIO y procesamiento de imágenes, que permite integrar hardware y software vario, con <u>interfaces gráficas</u>, <u>control remoto</u> y <u>transmisión de video</u>, empleando para ello, librerías tan comunes como:
 </div>
@@ -686,13 +709,13 @@
 <li>SocketIO</li>
 </ul>
 
-<h2 id="arquitectura">Arquitectura</h2>
+<h2 id="arquitectura">Arquitectura<a class="headerlink" href="#arquitectura" title="Anchor link to this section for reference">⚓</a></h2>
 <div style="text-align: justify">
 En el presente contexto, este software pretende agilizar la producción de dispositvos electrónicos cuya arquitectura sea afin a la siguiente propuesta:
 </div>
 <p><br>
 <img src="./assets/images/arch-1.png" alt="arch-1"></p>
-<div align="center"><b>Figura.</b> Arquitectura propuesta para el uso de la librería</div>
+<div align="center"><b>Figura.</b> Arquitectura propuesta para el uso de la librería.</div>
 <p><br></p>
 <div style="text-align: justify">
 <b>`COMPUTADOR`</b>: Se encarga de manejar la complejidad que pueda acarrear un cierto proyecto, como pueden ser sus algoritmos de procesamiento, o la comunicación con servidores en internet.
@@ -709,16 +732,26 @@ En el presente contexto, este software pretende agilizar la producción de dispo
 <br>
 <b>`SERVIDORES`</b>: Para el manejo de comunicación entre diferentes clientes.
 <hr>
-
 </div>
+
 <div style="text-align: justify">
 Esta distribución de componentes es práctica para el desarrollo de prototipos que demandan cierta complejidad de procesamiento, como puede ser el caso de un <b>robot</b>, un algoritmo de <b>IA</b> y cualquier otra posibilidad que este al alcance de esta combinación.
 </div>
 
-<h2 id="modulos">Módulos</h2>
-<p><img src="./assets/images/modules-arch.png" alt="modules"></p>
-<h2 id="caracteristicas">Características</h2>
-<p>Las principales características del software son:</p>
+<h2 id="modulos">Módulos<a class="headerlink" href="#modulos" title="Anchor link to this section for reference">⚓</a></h2>
+<p>Para la gestión de los diversos procesos y el manejo de eventos, REMIO implementa el siguiente esquema:
+<img src="./assets/images/modules-arch.png" alt="modules"></p>
+<div align="center"><b>Figura.</b> Módulos.</div>
+
+<p><br></p>
+<p><b><code>SERIAL MANAGER</code></b>: Se encarga de gestionar los diversos eventos que acontecen en los puertos seriales. Maneja callbacks de conexión y <b>lectura</b>, y también permite la <b>escritura</b> de datos. Su documentación y uso se pueden encontrar <a href="/remio/serial/overview">AQUÍ</a>.
+<br></p>
+<p><b><code>SOCKETIO MANAGER</code></b>: Se encarga de gestionar comunicaciones en tiempo real por medio del protocolo <b>SocketIO</b>. Su documentación y uso se pueden encontrar <a href="/remio/socketio/overview">AQUÍ</a>.
+<br></p>
+<p><b><code>CAMERA MANAGER</code></b>: Se encarga de gestionar video e imágenes provenientes de cámaras, emplenado para ello el API de OpenCV. Su documentació y uso se pueden encontrar <a href="/remio/camera/overview">AQUÍ</a>.
+<br></p>
+<h2 id="caracteristicas">Características<a class="headerlink" href="#caracteristicas" title="Anchor link to this section for reference">⚓</a></h2>
+<p>Las principales características de REMIO son:</p>
 <ul>
 <li>Manejo de múltiples cámaras a través de hilos.</li>
 <li>Uso de callbacks y eventos.</li>
@@ -729,7 +762,7 @@ Esta distribución de componentes es práctica para el desarrollo de prototipos 
 
 </ul>
 
-<h2 id="instalacion">Instalación</h2>
+<h2 id="instalacion">Instalación<a class="headerlink" href="#instalacion" title="Anchor link to this section for reference">⚓</a></h2>
 <p>1.- Cree un entorno virutal:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python3 -m venv venv
 </code></pre></div>
@@ -741,7 +774,7 @@ Esta distribución de componentes es práctica para el desarrollo de prototipos 
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>pip install -U .
 </code></pre></div></p>
-<h2 id="primeros-pasos">Primeros Pasos</h2>
+<h2 id="primeros-pasos">Primeros Pasos<a class="headerlink" href="#primeros-pasos" title="Anchor link to this section for reference">⚓</a></h2>
 <p>Realizada la instalación del presente módulo, te sugerimos revisar alguno de los siguientes apartados:</p>
 <ul>
 <li>Ejemplos</li>

@@ -1,9 +1,32 @@
-import time
-import json
+"""
+===============================================
+remio library source-code is deployed under the Apache 2.0 License:
+
+Copyright (c) 2022 Jason Francisco Macas Mora(@Hikki12) <franciscomacas3@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+===============================================
+"""
+
+# System modules
 from typing import Union
 from threading import Thread, Event
+import time
+import json
+
+# Third-party modules
 from serial import Serial
 from serial.tools import list_ports
+
+# Custom modules
 from .sevent import Emitter
 
 
@@ -18,12 +41,11 @@ class Serial(Emitter):
         emitterIsEnabled: disable on/emit events (callbacks execution).
 
     Events:
-        data: incoming(data: str).
-        connection: update(status: bool).
-        ports: list:ports
+        data: it's emitted when new data is available.
+        connection: it's emitted when the connection status is updated.
+        ports: it's emitted when a new device is found or disconnected.
 
     """
-
     def __init__(
         self,
         name: str = "default",
@@ -59,30 +81,30 @@ class Serial(Emitter):
         setattr(self.serial, key, value)
 
     def isConnected(self):
-        """It checks if the serial port is open."""
+        """Checks if the serial port is open."""
         return self.serial.isOpen()
 
     def getPort(self):
-        """It returns the current port device."""
+        """Ceturns the current port device."""
         return self.serial.port
 
     def setPort(self, port: str = None):
-        """It updates the port device value."""
+        """Updates the port device value."""
         if port is not None:
             self.serial.close()
             self.serial.port = port
             self.connect()
-        
+
     def restorePort(self):
         """Restores the default serial port."""
         self.setPort(self.port)
-    
+
     def resume(self):
-        """It resumes the read loop."""
+        """Resumes the read loop."""
         self.pauseEvent.set()
 
     def pause(self):
-        """It pauses the read loop."""
+        """Pauses the read loop."""
         self.pauseEvent.clear()
 
     def setPause(self, value: bool = True):
@@ -93,32 +115,32 @@ class Serial(Emitter):
             self.resume()
 
     def needAPause(self):
-        """It pauses or resume the read loop."""
+        """Pauses or resume the read loop."""
         self.pauseEvent.wait()
 
     def hasDevice(self):
-        """It checks if a serial device is setted."""
+        """Checks if a serial device is setted."""
         return self.port is not None
 
     def isOpen(self):
-        """It checks if serial port device is open."""
+        """Checks if serial port device is open."""
         return self.serial.isOpen()
 
     def attemptsLimitReached(self):
-        """Check if read attempts have reached their limit."""
+        """Checks if read attempts have reached their limit."""
         return self.attempts >= self.maxAttempts
 
     def start(self):
-        """It starts read loop."""
+        """Starts read loop."""
         self.running.set()
         self.thread.start()
 
     def getListOfPorts(self):
-        """It returns a list with the availables serial port devices."""
+        """Returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
     def connect(self):
-        """It will try to connect with the specified serial device."""
+        """Will try to connect with the specified serial device."""
         try:
             self.lastConnectionState = self.serial.isOpen()
 
@@ -132,17 +154,19 @@ class Serial(Emitter):
 
         except Exception as e:
             print("connection error: ", e)
-    
+
     def dictToJson(self, message: dict = {}) -> str:
-        """It converts a dictionary to a json str."""
+        """Converts a dictionary to a json str."""
         try:
             return json.dumps(message)
         except Exception as e:
-            print('Serial:: ', e)
+            print("Serial:: ", e)
         return message
 
-    def write(self, message: Union[str, dict] = "", end: str = "\n", asJson: bool = False):
-        """It writes a message to the serial device.
+    def write(
+        self, message: Union[str, dict] = "", end: str = "\n", asJson: bool = False
+    ):
+        """Writes a message to the serial device.
 
         Args:
             message: string to be sent.
@@ -152,7 +176,7 @@ class Serial(Emitter):
             try:
                 if len(message) > 0:
                     if asJson:
-                        message = self.dictToJson(message)                  
+                        message = self.dictToJson(message)
                     message += end
                     message = message.encode()
                     self.serial.write(message)
@@ -160,11 +184,12 @@ class Serial(Emitter):
                 print("Write error: ", e)
 
     def readData(self):
-        """It will try to read incoming data."""
+        """Will try to read incoming data."""
         try:
             data = self.serial.readline().decode().rstrip()
             if len(data) > 0:
-                if self.emitAsDict: data = {self.name: data}
+                if self.emitAsDict:
+                    data = {self.name: data}
                 self.emit("data", data)
                 return data
         except Exception as e:
@@ -180,7 +205,7 @@ class Serial(Emitter):
             return None
 
     def checkSerialPorts(self, dt: Union[int, float]):
-        """It Monitors if there are changes in the serial devices."""
+        """Monitors if there are changes in the serial devices."""
         if self.portsRefreshTime > 0:
             self.time += dt
             if self.time >= self.portsRefreshTime:
@@ -197,7 +222,8 @@ class Serial(Emitter):
 
             if self.lastConnectionState != self.serial.isOpen():
                 status = self.serial.isOpen()
-                if self.emitAsDict: status = {self.name: status}
+                if self.emitAsDict:
+                    status = {self.name: status}
                 self.emit("connection", status)
                 self.lastConnectionState = self.serial.isOpen()
 
@@ -215,13 +241,13 @@ class Serial(Emitter):
             self.needAPause()
 
     def disconnect(self):
-        """It clears the current serial port device."""
+        """Clears the current serial port device."""
         if self.serial.port is not None:
             self.serial.close()
             self.serial.port = None
 
     def stop(self):
-        """It stops the read loop an closed the connection with the serial device."""
+        """Stops the read loop an closed the connection with the serial device."""
         self.resume()
         self.disconnect()
         if self.running.is_set():
@@ -245,17 +271,17 @@ class Serials:
 
     def __len__(self):
         return len(self.devices)
-    
+
     def __getitem__(self, key):
         if key in self.devices:
             return self.devices[key]
 
     def hasDevices(self):
-        """It checks if there is some serial device on list."""
+        """Checks if there is some serial device on list."""
         return len(self.devices) > 0
 
     def setDevices(self, devices: list = [], *args, **kwargs):
-        """It updates the current serial devices list.
+        """Updates the current serial devices list.
 
         Args:
             devices: serial devices list.
@@ -266,12 +292,12 @@ class Serials:
         self.devices = [Serial(port=name, *args, **kwargs) for name in devices]
 
     def startAll(self):
-        """It starts all serial devices"""
+        """Starts all serial devices"""
         for device in self.devices.values():
             device.start()
 
     def startOnly(self, name: str = "default"):
-        """It starts only one specific serial device.
+        """Starts only one specific serial device.
 
         Args:
             name: device name.
@@ -280,12 +306,12 @@ class Serials:
             self.devices[name].start()
 
     def stopAll(self):
-        """It stops all serial devices running."""
+        """Stops all serial devices running."""
         for device in self.devices.values():
             device.stop()
 
-    def stopOnly(self, name="default"):
-        """It stops only one specific serial device.
+    def stopOnly(self, name: str = "default"):
+        """Stops only one specific serial device.
 
         Args:
             name: device name.
@@ -293,8 +319,8 @@ class Serials:
         if name in self.devices:
             self.device[name].stop()
 
-    def pauseOnly(self, deviceName="default"):
-        """It pauses a specific camera device.
+    def pauseOnly(self, deviceName: str = "default"):
+        """Pauses a specific camera device.
         Args:
             deviceName: camera device name.
         """
@@ -303,17 +329,17 @@ class Serials:
             device.pause()
 
     def pauseAll(self):
-        """It pauses all camera devices."""
+        """Pauses all camera devices."""
         for device in self.devices.values():
             device.pause()
 
     def resumeAll(self):
-        """It resumes all camera devices."""
+        """Resumes all camera devices."""
         for device in self.devices.values():
             device.resume()
 
-    def resumeOnly(self, deviceName="default"):
-        """It resumes a specific camera device.
+    def resumeOnly(self, deviceName: str = "default"):
+        """Resumes a specific camera device.
 
         Args:
             deviceName: camera device name.
@@ -323,21 +349,29 @@ class Serials:
             device.resume()
 
     def getListOfPorts(self):
-        """It returns a list with the availables serial port devices."""
+        """Returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
     def toJson(self, data: str = ""):
-        """Converts a string to a json."""
-        try: 
+        """Converts a string to a json.
+
+        Args:
+            data: a string message.
+        """
+        try:
             return json.loads(data)
         except Exception as e:
             # print("Serials:: ", e)
             return data
 
-    def writeTo(self, deviceName: str = "default", message: str = "", end: str = "\n", 
-            asJson: bool = False
-        ):
-        """It writes a message to a specific serial device.
+    def writeTo(
+        self,
+        deviceName: str = "default",
+        message: str = "",
+        end: str = "\n",
+        asJson: bool = False,
+    ):
+        """Writes a message to a specific serial device.
 
         Args:
             deviceName: name of the serial device.
@@ -349,7 +383,7 @@ class Serials:
             self.device[deviceName].write(message=message, end=end, asJson=asJson)
 
     def write(self, message: dict = {}, end: str = "\n", asJson: bool = False):
-        """It writes a message given a dict with the device name and the message.
+        """Writes a message given a dict with the device name and the message.
 
         Args:
             message: message to be written.

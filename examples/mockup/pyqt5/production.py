@@ -18,6 +18,7 @@ from settings import (
 
 class CustomMockup(Mockup):
     """A class for manage a mockup without a local GUI."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configureSerial()
@@ -45,10 +46,10 @@ class CustomMockup(Mockup):
 
     def serialConnectionStatus(self, status: dict = {"arduino": False}):
         """Sends to the server the serial devices connection status."""
-        print(f'serial status: {status}')
+        print(f"serial status: {status}")
         self.socket.on("serial-connection", status)
 
-    def serialDataIncoming(self, data:str):
+    def serialDataIncoming(self, data: str):
         """Read incoming data from the serial device."""
         data = self.serial.toJson(data)
         self.socket.on(DATA_CLIENT_SERVER, data)
@@ -64,11 +65,5 @@ if __name__ == "__main__":
         streamSettings=streamSettings,
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
-    )  
-    experiment.start(
-        camera=True, 
-        serial=False, 
-        socket=True, 
-        streamer=True, 
-        wait=True
     )
+    experiment.start(camera=True, serial=False, socket=True, streamer=True, wait=True)

@@ -28,6 +28,7 @@ ui_file = os.path.join(ui_path, "gui.ui")
 
 class CustomMockup(QMainWindow, Mockup):
     """A class for manage a mockup with a local GUI."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("gui.ui", self)
@@ -45,7 +46,7 @@ class CustomMockup(QMainWindow, Mockup):
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateVideo)
-        self.timer.start(1000 // 10) # 1000 // FPS
+        self.timer.start(1000 // 10)  # 1000 // FPS
 
     def configureSerial(self):
         """Configures serial on/emit events."""
@@ -112,7 +113,7 @@ class CustomMockup(QMainWindow, Mockup):
         """Update video pause status."""
         self.camera["webcam"].setPause(status)
         self.streamer.setPause(status)
-    
+
     def closeEvent(self, e):
         """stops running threads/processes when close the windows."""
         self.stop()
@@ -126,12 +127,6 @@ if __name__ == "__main__":
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
     )
-    experiment.start(
-        camera=True, 
-        serial=False, 
-        socket=True,
-        streamer=False, 
-        wait=False
-    )
+    experiment.start(camera=True, serial=False, socket=True, streamer=False, wait=False)
     experiment.show()
     sys.exit(app.exec_())

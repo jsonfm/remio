@@ -1,9 +1,32 @@
-import cv2
-import time
-import numpy as np
+"""
+===============================================
+remio library source-code is deployed under the Apache 2.0 License:
+
+Copyright (c) 2022 Jason Francisco Macas Mora(@Hikki12) <franciscomacas3@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+===============================================
+"""
+
+# System modules
+from threading import Thread, Event, Lock
 from typing import Union, Callable
 from queue import Queue
-from threading import Thread, Event, Lock
+
+# Third-party modules
+import numpy as np
+import cv2
+import time
+
+# Custom modules
 from .sevent import Emitter
 from .stream import MJPEGEncoder
 
@@ -18,14 +41,23 @@ class Camera(Emitter):
         fps: frames per second
         verbose: display info messages?
         size: tuple or list with a dimension of the image
+        flipX: flip image horizontally?
+        flipY: flip image vertically?
         emitterIsEnabled: disable on/emit events (callbacks execution)
         enableBackground: if some error is produced with the camera it will display
-                                a black frame with a message.
+                          a black frame with a message.
+        text: background message
+        font: cv2 font
+        fontScale: cv2 font scale
+        fontColor: bgr tuple for set the color of the text
+        thickness: font thickness
         queueModeEnabled: enable queue mode?
         queueMaxSize: queue maxsize
+        processing: a function to performing some image processing
+        processingParams: params for processing functions
 
-    Example usage:
-        camera = Camera(src=0)
+    Example:
+        camera = Camera(src=0, emitterIsEnabled)
         camera.on('frame-ready', lambda frame: print('frame is ready:', type(frame)))
     """
 
@@ -41,13 +73,13 @@ class Camera(Emitter):
         flipY: bool = False,
         emitterIsEnabled: bool = False,
         backgroundIsEnabled: bool = False,
-        queueModeEnabled: bool = False,
-        queueMaxSize: int = 96,
         text: str = "Device not available",
         font: None = cv2.FONT_HERSHEY_SIMPLEX,
         fontScale: Union[int, float] = 0.5,
         fontColor: Union[tuple, list] = [255, 255, 255],
         thickness: int = 1,
+        queueModeEnabled: bool = False,
+        queueMaxSize: int = 96,
         processing: Callable = None,
         processingParams: dict = {},
         encoderIsEnabled: bool = True,
@@ -176,51 +208,51 @@ class Camera(Emitter):
         )
 
     def disableBackground(self):
-        """It disables the background."""
+        """Disables the background."""
         self.backgroundIsEnabled = False
         self.background = None
 
     def start(self):
-        """It starts the read loop."""
+        """Starts the read loop."""
         self.thread.start()
         return self
 
     def getProcessingParams(self):
-        """It returns processings params (kwargs)."""
+        """Returns processings params (kwargs)."""
         if self.processingParams is None:
             self.processingParams = {}
         return self.processingParams
 
     def hasProcessing(self):
-        """It checks if a processing function is available."""
+        """Checks if a processing function is available."""
         return self.processing is not None
 
     def isConnected(self) -> bool:
-        """It checks if a camera device is available."""
+        """Checks if a camera device is available."""
         if self.device is not None:
             return self.device.isOpened()
         return False
 
     def loadDevice(self):
-        """It loads a camera device."""
+        """Loads a camera device."""
         try:
             self.device = cv2.VideoCapture(self.src)
         except cv2.error as e:
             print("Exception: ", e)
 
     def reconnect(self):
-        """It tries to reconnect with the camera device."""
+        """Tries to reconnect with the camera device."""
         self.readEvent.clear()
         self.loadDevice()
         time.sleep(self.reconnectDelay)
         self.readEvent.set()
 
     def resume(self):
-        """It resumes the read loop."""
+        """Resumes the read loop."""
         self.pauseEvent.set()
 
     def pause(self):
-        """It pauses the read loop."""
+        """Pauses the read loop."""
         self.pauseEvent.clear()
 
     def setPause(self, value: bool = True):
@@ -231,11 +263,15 @@ class Camera(Emitter):
             self.resume()
 
     def needAPause(self):
-        """It pauses or resume the read loop."""
+        """Pauses or resume the read loop."""
         self.pauseEvent.wait()
 
-    def preprocess(self, frame) -> np.ndarray:
-        """It preprocess the frame."""
+    def preprocess(self, frame: np.ndarray = None) -> np.ndarray:
+        """Preprocess the frame.
+
+        Args:
+            frame: an image array
+        """
         if self.size is not None:
             frame = cv2.resize(frame, self.size[:2])
 
@@ -248,14 +284,14 @@ class Camera(Emitter):
         return frame
 
     def process(self, frame: np.ndarray = None) -> np.ndarray:
-        """It executes the processing function."""
+        """Executes the processing function."""
         if self.hasProcessing():
             kwargs = self.getProcessingParams()
             frame = self.processing(frame, **kwargs)
         return frame
 
     def update(self):
-        """It tries to read a frame from the camera."""
+        """Tries to read a frame from the camera."""
         self.readEvent.clear()
         self.readLock.acquire()
 
@@ -281,7 +317,7 @@ class Camera(Emitter):
             self.readLock.release()
 
     def read(self, timeout: Union[float, int, None] = 0) -> Union[None, np.ndarray]:
-        """It returns a frame or a background.
+        """Returns a frame or a background.
 
         Args:
             timeout: max time in seconds to lock operation
@@ -299,7 +335,7 @@ class Camera(Emitter):
             time.sleep(self.delay)
 
     def run(self):
-        """It runs the read loop."""
+        """Executes the read loop."""
         self.loadDevice()
         self.running.set()
 
@@ -316,19 +352,19 @@ class Camera(Emitter):
         self.device.release()
 
     def getName(self) -> str:
-        """It returns the name of the current device."""
+        """Returns the name of the current device."""
         return self.name
 
     def getFrame(self) -> Union[None, np.ndarray]:
-        """It returns the current frame."""
+        """Returns the current frame."""
         return self.frame
 
     def getFrame64(self) -> Union[None, str]:
-        """Returns the current frame on base64 format"""
+        """Returns the current frame on base64 format."""
         return self.frame64
 
     def getBackground(self) -> Union[None, np.ndarray]:
-        """It returns the current background."""
+        """Returns the current background."""
         if self.backgroundIsEnabled:
             if self.background is None:
                 self.background = self.createBackground(size=self.size)
@@ -367,7 +403,7 @@ class Cameras:
         emitterIsEnabled: disable on/emit events (callbacks execution)
         enableBackground: if some error is produced with the camera it will display
                                 a black frame with a message.
-                                
+
     Example usage:
         cameras = Cameras(devices={'camera1': {'src': 0}, 'cameras2': {'src': 1}})
     """
@@ -386,12 +422,12 @@ class Cameras:
         return len(self.devices)
 
     def startAll(self):
-        """It starts all camera devices on the devices dict."""
+        """Starts all camera devices on the devices dict."""
         for device in self.devices.values():
             device.start()
 
     def startOnly(self, deviceName: str = "default"):
-        """It starts only a specific device.
+        """Starts only a specific device.
         Args:
             deviceName: camera device name.
         """
@@ -400,12 +436,13 @@ class Cameras:
             device.start()
 
     def stopAll(self):
-        """It stops all camera devices."""
+        """Stops all camera devices."""
         for device in self.devices.values():
             device.stop()
 
     def stopOnly(self, deviceName: str = "default"):
-        """It stops an specific camera device.
+        """Stops an specific camera device.
+
         Args:
             deviceName: camera device name.
         """
@@ -414,15 +451,17 @@ class Cameras:
             device.stop()
 
     def getDevice(self, deviceName: str = "default"):
-        """It returns a specific camera device.
+        """Returns a specific camera device.
+
         Args:
             deviceName: camera device name.
         """
         if deviceName in self.devices:
             return self.devices[deviceName]
 
-    def pauseOnly(self, deviceName="default"):
-        """It pauses a specific camera device.
+    def pauseOnly(self, deviceName: str = "default"):
+        """Pauses a specific camera device.
+
         Args:
             deviceName: camera device name.
         """
@@ -431,17 +470,17 @@ class Cameras:
             device.pause()
 
     def pauseAll(self):
-        """It pauses all camera devices."""
+        """Pauses all camera devices."""
         for device in self.devices.values():
             device.pause()
 
     def resumeAll(self):
-        """It resumes all camera devices."""
+        """Resumes all camera devices."""
         for device in self.devices.values():
             device.resume()
 
-    def resumeOnly(self, deviceName="default"):
-        """It resumes a specific camera device.
+    def resumeOnly(self, deviceName: str = "default"):
+        """Resumes a specific camera device.
 
         Args:
             deviceName: camera device name.
@@ -451,7 +490,7 @@ class Cameras:
             device.resume()
 
     def setSpeedOnly(self, deviceName: str = "default", fps: int = 10):
-        """It updates the FPS captured by a specific devices.
+        """Updates the FPS captured by a specific devices.
 
         Args:
             deviceName: camera device name.
@@ -459,8 +498,8 @@ class Cameras:
         if deviceName in self.devices:
             self.devices[deviceName].setSpeed(fps)
 
-    def getAllFrames(self, asDict=True):
-        """It returns a list with all cameras current frames.
+    def getAllFrames(self, asDict: bool = True):
+        """Returns a list with all cameras current frames.
 
         Args:
             asDict: return frames as dict or as list?
@@ -473,8 +512,8 @@ class Cameras:
             frames = [device.getFrame() for device in self.devices.values()]
         return frames
 
-    def getAllFrames64(self, asDict=True):
-        """It returns a list with all cameras current frames on base64 format.
+    def getAllFrames64(self, asDict: bool = True):
+        """Returns a list with all cameras current frames on base64 format.
 
         Args:
             asDict: return frames as dict or as list?
@@ -488,8 +527,8 @@ class Cameras:
             frames = [device.getFrame() for device in self.devices.values()]
         return frames
 
-    def getFrameOf(self, deviceName="default"):
-        """It returns a specific frame of a camera device.
+    def getFrameOf(self, deviceName: str = "default"):
+        """Returns a specific frame of a camera device.
 
         Args:
             deviceName: camera device name.
@@ -497,8 +536,8 @@ class Cameras:
         if deviceName in self.devices:
             return self.devices[deviceName].getFrame()
 
-    def getFrame64Of(self, deviceName="default"):
-        """It returns a specific frame on base 64 of a camera device.
+    def getFrame64Of(self, deviceName: str = "default"):
+        """Returns a specific frame on base 64 of a camera device.
 
         Args:
             deviceName: camera device name.
@@ -506,8 +545,8 @@ class Cameras:
         if deviceName in self.devices:
             return self.devices[deviceName].getFrame64()
 
-    def read(self, timeout=0, asDict=True):
-        """It returns a list or a dict of frames/backgrounds.
+    def read(self, timeout: Union[int, float] = 0, asDict: bool = True):
+        """Returns a list or a dict of frames/backgrounds.
 
         Args:
             timeout: max wait time in seconds.

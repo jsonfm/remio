@@ -24,7 +24,7 @@ class CustomSocketIO(Client):
             super().emit(*args, **kwargs)
         except Exception as e:
             print("socket:: ", e)
-    
+
     def on(self, *args, **kwargs):
         event = args[0]
         handler = args[1]
@@ -33,6 +33,6 @@ class CustomSocketIO(Client):
             super().on("disconnect", handler)
         else:
             super().on(*args, **kwargs)
-    
+
     def isConnected(self):
         return not self.connected

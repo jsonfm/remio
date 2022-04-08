@@ -11,6 +11,7 @@ def processing(frame: np.ndarray = None):
 
 class RepeatTimer(Timer):
     """A timer with a recurrent task."""
+
     def run(self):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)

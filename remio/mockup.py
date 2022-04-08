@@ -1,8 +1,27 @@
-"""Mockup base file."""
+"""
+===============================================
+remio library source-code is deployed under the Apache 2.0 License:
 
+Copyright (c) 2022 Jason Francisco Macas Mora(@Hikki12) <franciscomacas3@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+===============================================
+"""
+
+# System modules
 import sys
 import signal
 from threading import Event
+
+# Custom modules
 from .camio import Cameras
 from .serialio import Serials
 from .socketSync import CustomSocketIO
@@ -32,16 +51,14 @@ class Mockup:
         self.serial = Serials(devices=serialSettings)
         self.socket = CustomSocketIO(**serverSettings)
         self.streamer = SocketStreamer(
-            socket=self.socket, 
-            reader=self.camera.read, 
-            **streamSettings
+            socket=self.socket, reader=self.camera.read, **streamSettings
         )
 
         self.waitEvent = Event()
         self.waitEvent.clear()
 
         signal.signal(signal.SIGINT, self.softStop)
-        signal.signal(signal.SIGTERM, self.softStop)  
+        signal.signal(signal.SIGTERM, self.softStop)
 
     def __del__(self):
         self.stop()
@@ -74,7 +91,7 @@ class Mockup:
 
         if streamer:
             self.streamer.start()
-        
+
         if wait:
             self.waitEvent.wait()
 

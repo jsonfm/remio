@@ -79,7 +79,7 @@ class MJPEGEncoder:
         """
         if frame is not None:
             colorspace = self.colorspace
-            
+
             if frame.ndim == 2:
                 frame = frame[:, :, np.newaxis]
                 colorspace = "GRAY"

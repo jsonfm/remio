@@ -1,9 +1,14 @@
-"""Ports"""
-from remio import Serials
+"""List the serial ports devices"""
+from remio import Serial, Serials
 
 
-serial = Serials()
+print("> Available port devices:")
+for port in Serial.ports():
+    print(f" - {port}")
+print()
 
 
-for port in serial.getListOfPorts():
+# Also available with the Serials class
+print("> Available port devices:")
+for port in Serials.ports():
     print(f" - {port}")

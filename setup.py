@@ -1,7 +1,7 @@
+import os
 from distutils.version import LooseVersion
 from distutils.util import convert_path
 from setuptools import setup, find_packages
-
 
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
@@ -14,21 +14,15 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = long_description.replace("©", "(c)")
 
 
-pkg_version = {}
-ver_path = convert_path("remio/version.py")
-with open(ver_path) as ver_file:
-    exec(ver_file.read(), pkg_version)
-
-
 setup(
     name="remio",
-    packages=find_packages("remio", exclude=["test", "site", "arduino"]),
-    version=pkg_version["__version__"],
+    packages=find_packages("remio", exclude=["tests", "examples", "site", "docs", "arduino"]),
+    version="0.1.0",
     description="A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="Apache License 2.0",
-    author="Jason Macas",
+    author="Jason Francisco Macas Mora",
     author_email="franciscomacas3@gmail.com",
     url="https://github.com/Hikki12/remio",
     install_requires=requirements,
@@ -56,4 +50,11 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
+    python_requires=">=3.7",
+    scripts=[],
+    project_urls={
+        "Bug Reports": "https://github.com/Hikki12/remio/issues",
+        "Source": "https://github.com/Hikki12/remio",
+        "Documentation": "https://hikki12.github.io/remio",
+    },
 )

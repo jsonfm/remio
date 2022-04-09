@@ -23,7 +23,7 @@ import time
 import json
 
 # Third-party modules
-from serial import Serial
+from serial import Serial as PySerial
 from serial.tools import list_ports
 
 # Custom modules
@@ -68,7 +68,7 @@ class Serial(Emitter):
         self.attempts = 0
         self.time = 0
         self.lastDevicesList = []
-        self.serial = Serial(*args, **kwargs)
+        self.serial = PySerial(*args, **kwargs)
 
         self.thread = Thread(target=self.run, name="serial-thread", daemon=True)
         self.running = Event()
@@ -135,7 +135,8 @@ class Serial(Emitter):
         self.running.set()
         self.thread.start()
 
-    def getListOfPorts(self):
+    @staticmethod
+    def ports():
         """Returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
@@ -153,14 +154,14 @@ class Serial(Emitter):
             self.serial.open()
 
         except Exception as e:
-            print("connection error: ", e)
+            print(f"-> Serial - {self.name} :: {e}")
 
     def dictToJson(self, message: dict = {}) -> str:
         """Converts a dictionary to a json str."""
         try:
             return json.dumps(message)
         except Exception as e:
-            print("Serial:: ", e)
+            print(f"-> Serial - {self.name} :: {e}")
         return message
 
     def write(
@@ -181,7 +182,7 @@ class Serial(Emitter):
                     message = message.encode()
                     self.serial.write(message)
             except Exception as e:
-                print("Write error: ", e)
+                print(f"-> Serial - {self.name} :: {e}")
 
     def readData(self):
         """Will try to read incoming data."""
@@ -193,7 +194,7 @@ class Serial(Emitter):
                 self.emit("data", data)
                 return data
         except Exception as e:
-            print("Read data error: ", e)
+            print(f"-> Serial - {self.name} :: {e}")
             if not self.attemptsLimitReached():
                 self.attempts += 1
             else:
@@ -201,7 +202,7 @@ class Serial(Emitter):
                 try:
                     self.serial.close()
                 except Exception as e:
-                    print(e)
+                    print(f"-> Serial - {self.name} :: {e}")
             return None
 
     def checkSerialPorts(self, dt: Union[int, float]):
@@ -209,7 +210,7 @@ class Serial(Emitter):
         if self.portsRefreshTime > 0:
             self.time += dt
             if self.time >= self.portsRefreshTime:
-                actualDevicesList = self.getListOfPorts()
+                actualDevicesList = self.ports()
                 if actualDevicesList != self.lastDevicesList:
                     self.lastDevicesList = actualDevicesList
                     self.emit("ports", actualDevicesList)
@@ -259,7 +260,17 @@ class Serials:
     """A class for manage multiple serial devices at the same time.
 
     Args:
-        devices: a list of serial devices to be controled.
+        name: device name.
+        reconnectDelay: wait time between reconnection attempts.
+        maxAttempts: max read attempts.
+        portsRefreshTime: time for check serial devices changes.
+        emitterIsEnabled: disable on/emit events (callbacks execution).
+
+    Events:
+        data: it's emitted when new data is available.
+        connection: it's emitted when the connection status is updated.
+        ports: it's emitted when a new device is found or disconnected.
+
     """
 
     def __init__(self, devices: dict = {}, *args, **kwargs):
@@ -348,7 +359,8 @@ class Serials:
             device = self.devices[deviceName]
             device.resume()
 
-    def getListOfPorts(self):
+    @staticmethod
+    def ports():
         """Returns a list with the availables serial port devices."""
         return [port.device for port in list_ports.comports()]
 
@@ -361,7 +373,7 @@ class Serials:
         try:
             return json.loads(data)
         except Exception as e:
-            # print("Serials:: ", e)
+            print(f"-> Serials :: {e}")
             return data
 
     def writeTo(
@@ -410,7 +422,7 @@ class Serials:
             # elif eventName == 'connection':
             #     f = lambda status: callback(device.getPort(), status)
             # elif eventName == 'ports' and index == 0:
-            #     f = lambda ports: callback(device.getListOfPorts())
+            #     f = lambda ports: callback(device.ports())
             #     device.on(eventName, f, *args, **kwargs)
             # if  eventName == 'ports':
             #     device.on(eventName, callback, *args, **kwargs)

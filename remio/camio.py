@@ -35,8 +35,8 @@ class Camera(Emitter):
     """Camera device object, based on threading.
 
     Args:
-        src: device source
         name: device name
+        src: device source
         reconnectDelay: wait time for try reopen camera device
         fps: frames per second
         verbose: display info messages?
@@ -44,7 +44,7 @@ class Camera(Emitter):
         flipX: flip image horizontally?
         flipY: flip image vertically?
         emitterIsEnabled: disable on/emit events (callbacks execution)
-        enableBackground: if some error is produced with the camera it will display
+        backgroundIsEnabled: if some error is produced with the camera it will display
                           a black frame with a message.
         text: background message
         font: cv2 font
@@ -63,8 +63,8 @@ class Camera(Emitter):
 
     def __init__(
         self,
-        src: Union[int, str] = 0,
         name: str = "default",
+        src: Union[int, str] = 0,
         reconnectDelay: Union[int, float] = 5,
         fps: Union[int, None] = 10,
         verbose: bool = False,
@@ -107,6 +107,7 @@ class Camera(Emitter):
         self.encoderIsEnabled = encoderIsEnabled
         self.encoder = MJPEGEncoder(**encoderParams)
 
+        self.isNewFrame = True
         if self.fps is not None:
             self.delay = 1 / self.fps
         else:
@@ -211,6 +212,11 @@ class Camera(Emitter):
         """Disables the background."""
         self.backgroundIsEnabled = False
         self.background = None
+    
+    def clearFrame(self):
+        """Clears the current frame."""
+        self.frame = None
+        self.frame64 = None
 
     def start(self):
         """Starts the read loop."""
@@ -235,10 +241,9 @@ class Camera(Emitter):
 
     def loadDevice(self):
         """Loads a camera device."""
-        try:
-            self.device = cv2.VideoCapture(self.src)
-        except cv2.error as e:
-            print("Exception: ", e)
+        self.device = cv2.VideoCapture(self.src)
+        if not self.isConnected():
+            print(f"-> {self.name} : {self.src} :: could not be connected.")
 
     def reconnect(self):
         """Tries to reconnect with the camera device."""
@@ -298,6 +303,7 @@ class Camera(Emitter):
         deviceIsAvailable, frame = self.device.read()
 
         if deviceIsAvailable:
+
             frame = self.preprocess(frame)
             self.frame = self.process(frame)
 
@@ -307,9 +313,6 @@ class Camera(Emitter):
 
             if self.queueModeEnabled:
                 self.queue.put(self.frame)
-
-            # if self.encoderIsEnabled:
-            #     self.frame64 = self.encoder.encode(self.frame)
 
         self.readEvent.set()
 
@@ -401,7 +404,7 @@ class Cameras:
         verbose: display info messages?
         size: tuple or list with a dimension of the image
         emitterIsEnabled: disable on/emit events (callbacks execution)
-        enableBackground: if some error is produced with the camera it will display
+        backgroundIsEnabled: if some error is produced with the camera it will display
                                 a black frame with a message.
 
     Example usage:
@@ -498,6 +501,11 @@ class Cameras:
         if deviceName in self.devices:
             self.devices[deviceName].setSpeed(fps)
 
+    def clearAllFrames(self):
+        """Clears All frames."""
+        for device in self.devices.values():
+            device.clearFrame()
+
     def getAllFrames(self, asDict: bool = True):
         """Returns a list with all cameras current frames.
 
@@ -552,6 +560,9 @@ class Cameras:
             timeout: max wait time in seconds.
             asDict: return as a dict?
         """
+        if len(self.devices) < 2:
+            return list(self.devices.values())[0].read(timeout=timeout)
+
         if asDict:
             return {
                 device.getName(): device.read(timeout=timeout)

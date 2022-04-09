@@ -1,3 +1,4 @@
+import numpy as np
 import unittest
 import time
 from remio import Camera, Cameras
@@ -5,9 +6,10 @@ from remio import Camera, Cameras
 
 class TestCameras(unittest.TestCase):
     def setUp(self):
-        self.camera = Camera(src=1)
-        self.camera.start()
-        time.sleep(1.0)
+        self.camera = Camera(src=0)
+
+    def test_read_camera(self):
+        assert 3 == 3, "Error"
 
     def test_single_camera(self):
         assert (

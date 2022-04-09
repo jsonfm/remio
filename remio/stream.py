@@ -7,6 +7,9 @@ import numpy as np
 import base64 as b64
 import simplejpeg
 
+from socketio import Client
+
+
 
 class MJPEGEncoder:
     """MJPEG encoder based on simplejpeg library.
@@ -118,7 +121,7 @@ class SocketStreamer:
 
     def __init__(
         self,
-        socket=None,
+        socket: Union[Client, None] = None,
         reader: Callable = None,
         endpoint: str = "",
         fps: int = 10,
@@ -126,6 +129,8 @@ class SocketStreamer:
         *args,
         **kwargs,
     ):
+        # if not isinstance(socket, (type(None), type(Client))):
+        #     raise ValueError("socket must be a socketio client or a custom socket class.")
         self.socket = socket
         self.encoder = MJPEGEncoder(*args, **kwargs)
         self.lastFrame = None

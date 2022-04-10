@@ -55,7 +55,7 @@ class Camera(Emitter):
         queueMaxSize: queue maxsize
         processing: a function to performing some image processing
         processingParams: params for processing functions
-    
+
     Events:
         frame-ready: emits a new frame when it's available.
         frame-available: emits a notification when a new frame it's available.
@@ -89,7 +89,7 @@ class Camera(Emitter):
         encoderIsEnabled: bool = True,
         encoderParams: dict = {},
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(Camera, self).__init__(emitterIsEnabled=emitterIsEnabled, *args, **kwargs)
         self.src = src
@@ -216,7 +216,7 @@ class Camera(Emitter):
         """Disables the background."""
         self.backgroundIsEnabled = False
         self.background = None
-    
+
     def clearFrame(self):
         """Clears the current frame."""
         self.frame = None
@@ -386,10 +386,10 @@ class Camera(Emitter):
         if self.fps is not None:
             self.defaultDelay = 1 / self.fps
             self.delay = self.defaultDelay
-    
+
     def setProcessing(self, processing: Callable = None, **kwargs):
         """Updates the processing function and its params (kwargs).
-        
+
         Args:
             processing: a function for make some image processing
             kwargs: kwargs (params) for the processing function

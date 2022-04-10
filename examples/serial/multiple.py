@@ -8,7 +8,7 @@ devices = {
     "arduino1": {
         "port": "/dev/cu.usbserial-1440",
         "baudrate": 9600,
-        "emitterIsEnabled": True, # Enable on/emit callbacks
+        "emitterIsEnabled": True,  # Enable on/emit callbacks
         "reconnectDelay": 5,
     },
     "arduino2": {

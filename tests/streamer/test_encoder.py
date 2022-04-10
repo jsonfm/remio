@@ -7,7 +7,7 @@ encoderParams = {
     "quality": 60,
     "colorspace": "bgr",
     "colorsubsampling": "422",
-    "fastdct": True
+    "fastdct": True,
 }
 
 
@@ -17,7 +17,7 @@ def read_frame():
 
 def test_encoder():
     """Test socket encoder class."""
-    max_encoding_time = 0.02 # seconds
+    max_encoding_time = 0.02  # seconds
     encoder = MJPEGEncoder(**encoderParams)
     encoding_time = []
     for i in range(10):

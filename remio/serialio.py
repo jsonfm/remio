@@ -47,6 +47,7 @@ class Serial(Emitter):
         ports: it's emitted when a new device is found or disconnected.
 
     """
+
     def __init__(
         self,
         name: str = "default",
@@ -56,7 +57,7 @@ class Serial(Emitter):
         emitterIsEnabled: bool = True,
         emitAsDict: bool = True,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(emitterIsEnabled=emitterIsEnabled, *args, **kwargs)
         self.name = name

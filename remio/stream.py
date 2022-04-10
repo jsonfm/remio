@@ -10,7 +10,6 @@ import simplejpeg
 from socketio import Client
 
 
-
 class MJPEGEncoder:
     """MJPEG encoder based on simplejpeg library.
 

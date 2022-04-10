@@ -8,7 +8,7 @@ devices = {
     "arduino": {
         "port": "/dev/cu.usbserial-1440",
         "baudrate": 9600,
-        "emitterIsEnabled": True, # Enable on/emit callbacks
+        "emitterIsEnabled": True,  # Enable on/emit callbacks
         "reconnectDelay": 5,
     },
 }
@@ -20,7 +20,7 @@ serial = Serials(devices=devices)
 serial.on("connection", lambda status: print(f"serial connected: {status}"))
 
 # Start device(s) connection on background
-serial.startAll() 
+serial.startAll()
 
 
 while True:

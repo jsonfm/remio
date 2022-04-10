@@ -3,7 +3,7 @@ import time
 from remio import CustomSocketIO
 
 # Intialize the socketio client
-socket = CustomSocketIO(address='http://localhost:5000')
+socket = CustomSocketIO(address="http://localhost:5000")
 
 # Define routes
 socket.on("connection", lambda: print(f"-> connected: {socket.isConnected()}"))

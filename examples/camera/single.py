@@ -29,25 +29,25 @@ T = 1 / FPS
 while True:
 
     t0 = time.time()
-    
+
     frame = camera["webcam"].read()
-    camera.clearAllFrames() # to avoid repeated frames
+    camera.clearAllFrames()  # to avoid repeated frames
 
     if frame is not None:
         cv2.imshow("webcam1", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
     t1 = time.time()
 
-    # Get a fixed delay value (t1 - t0) + delay = T 
+    # Get a fixed delay value (t1 - t0) + delay = T
     delay = abs(T - (t1 - t0))
     time.sleep(delay)
-    
+
 
 # Close all Windows
-cv2.destroyAllWindows() 
+cv2.destroyAllWindows()
 
 # Stop all Running devices
 camera.stopAll()

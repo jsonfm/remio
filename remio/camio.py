@@ -38,7 +38,7 @@ class Camera(Emitter):
         name: device name
         src: device source
         reconnectDelay: wait time for try reopen camera device
-        fps: frames per second
+        fps: frames per second, if it's None it will set automatically
         verbose: display info messages?
         size: tuple or list with a dimension of the image
         flipX: flip image horizontally?
@@ -55,6 +55,10 @@ class Camera(Emitter):
         queueMaxSize: queue maxsize
         processing: a function to performing some image processing
         processingParams: params for processing functions
+    
+    Events:
+        frame-ready: emits a new frame when it's available.
+        frame-available: emits a notification when a new frame it's available.
 
     Example:
         camera = Camera(src=0, emitterIsEnabled)
@@ -66,7 +70,7 @@ class Camera(Emitter):
         name: str = "default",
         src: Union[int, str] = 0,
         reconnectDelay: Union[int, float] = 5,
-        fps: Union[int, None] = 10,
+        fps: Union[int, None] = None,
         verbose: bool = False,
         size: Union[list, tuple, None] = None,
         flipX: bool = False,
@@ -374,7 +378,7 @@ class Camera(Emitter):
             return self.background
 
     def setSpeed(self, fps: Union[int, None] = 10):
-        """It updates the frames per second (fps).
+        """Updates the frames per second (fps).
         Args:
             fps: frames per sec. If no parameter is passed, auto speed will be set.
         """
@@ -382,9 +386,19 @@ class Camera(Emitter):
         if self.fps is not None:
             self.defaultDelay = 1 / self.fps
             self.delay = self.defaultDelay
+    
+    def setProcessing(self, processing: Callable = None, **kwargs):
+        """Updates the processing function and its params (kwargs).
+        
+        Args:
+            processing: a function for make some image processing
+            kwargs: kwargs (params) for the processing function
+        """
+        self.processing = processing
+        self.processingParams = kwargs
 
     def stop(self):
-        """It stops the read loop."""
+        """Stops the read loop."""
         self.resume()
 
         if self.readLock.locked():
@@ -407,7 +421,7 @@ class Cameras:
         backgroundIsEnabled: if some error is produced with the camera it will display
                                 a black frame with a message.
 
-    Example usage:
+    Example:
         cameras = Cameras(devices={'camera1': {'src': 0}, 'cameras2': {'src': 1}})
     """
 

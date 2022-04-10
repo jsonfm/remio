@@ -37,8 +37,9 @@ class Serial(Emitter):
         name: device name.
         reconnectDelay: wait time between reconnection attempts.
         maxAttempts: max read attempts.
-        portsRefreshTime: time for check serial devices changes.
+        portsRefreshTime: time for check serial devices changes (secs).
         emitterIsEnabled: disable on/emit events (callbacks execution).
+        emitAsDict: emit events on dict format {'emitter_name': data} ?
 
     Events:
         data: it's emitted when new data is available.

@@ -3,6 +3,7 @@ from distutils.version import LooseVersion
 from distutils.util import convert_path
 from setuptools import setup, find_packages
 
+
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 

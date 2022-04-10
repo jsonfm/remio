@@ -7,7 +7,12 @@
 
 </div>
 
-A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi. It was born in the context of remote laboratories, hence its name, where I used and developed several prototypes where the code began to redound. That's where I extracted the modules from this library.
+A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi. It was born in the context of remote laboratories, hence its name, where I used and developed several prototypes where the code began to redound. That's where I extracted the modules from this library. The hardware architecture that I used to employ was the following:
+
+<img src="./docs/assets/images/arch-1.png" style="margin: 1rem 0;">
+
+So I programmed the following architecture
+<img src="./docs/assets/images/modules-arch.png" style="margin: 1rem 0;">
 
 ## Features
 - Multiple Camera API

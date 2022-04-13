@@ -1,7 +1,4 @@
-import os
-from distutils.version import LooseVersion
-from distutils.util import convert_path
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 with open("requirements.txt") as f:
@@ -17,9 +14,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="remio",
-    packages=find_packages(
-        "remio", exclude=["tests", "examples", "site", "docs", "arduino"]
-    ),
+    packages=["remio"],
     version="0.1.0",
     description="A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi.",
     long_description=long_description,

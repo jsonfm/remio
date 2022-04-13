@@ -12,7 +12,7 @@ A library for managing concurrent socketio, cv2, and pyserial processes. Useful 
 <img src="./docs/assets/images/arch-1.png" style="margin: 1rem 0;">
 
 So I programmed the following architecture
-<img src="./docs/assets/images/modules-arch.png" style="margin: 1rem 0;">
+<img src="./docs/assets/images/modules-arch.png" style="margin: 2rem 0;">
 
 ## Features
 - Multiple Camera API
@@ -26,9 +26,11 @@ So I programmed the following architecture
 ## Install
 Clone the repository:
 ```
-git clone https://github.com/Hikki12/remio && cd remio
+git clone https://github.com/Hikki12/remio
 
-pip install -U .
+cd remio
+
+pip install .
 ```
 ## Development
 If you are a devolper, install the library as follows:

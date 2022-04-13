@@ -53,7 +53,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.serial.on("connection", self.serialConnectionStatus)
         self.serial.on("ports", self.serialPortsUpdate)
         self.serial.on("data", self.serialDataIncoming)
-        self.serialPortsUpdate(self.serial.getListOfPorts())
+        self.serialPortsUpdate(self.serial.ports())
 
     def configureSocket(self):
         """Configures socket on/emit events."""

@@ -5,7 +5,7 @@ from remio import Cameras
 from utils import Tracker
 
 # Intialize tracker
-tracker = Tracker()
+robot = Tracker()
 
 # Define devices
 devices = {
@@ -17,7 +17,7 @@ devices = {
         "reconnectDelay": 5,
         "backgroundIsEnabled": True,
         "emitterIsEnabled": False,
-        "processing": tracker.track,
+        "processing": robot.track,
     },
 }
 
@@ -46,7 +46,7 @@ while True:
 
     t1 = time.time()
 
-    print(f"position: {tracker.get_position()}")
+    print(f"position: {robot.get_position()}")
 
     # Get a fixed delay value (t1 - t0) + delay = T
     delay = abs(T - (t1 - t0))

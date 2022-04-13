@@ -14,11 +14,11 @@ def processing(frame, *args, **kwargs):
     return frame
 
 
-# Intialize Serial manager
+# Intialize Camera manager
 camera = Cameras(devices={"webcam": {"src": 0, "size": [400, 300]}})
 camera["webcam"].setProcessing(processing)
 
-# Start device(s) connection on background
+# Start device(s) read loops on background
 camera.startAll()
 
 # Set a FPS speed to display image(s)

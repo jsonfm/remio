@@ -29,7 +29,7 @@ cameraSettings = {
     "webcam": {
         "src": 0,
         "fps": None,
-        "size": [320, 240],
+        "size": [600, 400],
         "flipX": True,
         "flipY": False,
         "emitterIsEnabled": False,
@@ -44,7 +44,7 @@ cameraSettings = {
 
 serialSettings = {
     "arduino": {
-        "port": "/dev/cu.usbserial-1440",
+        "port": "/dev/cu.usbserial-1460",
         "baudrate": 9600,
         "timeout": 1.0,
         "reconnectDelay": 5,

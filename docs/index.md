@@ -92,7 +92,7 @@ pip install -U .
 ## Primeros Pasos
 Realizada la instalación del presente módulo, te sugerimos revisar alguno de los siguientes apartados:
 <ul>
-<li>Ejemplos</li>
+<li><a href="/remio/camera/overview/">Camera</a></li>
 </ul>
 <br>
 <br>

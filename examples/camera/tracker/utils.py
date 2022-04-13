@@ -141,10 +141,10 @@ class Tracker(object):
     ):
         """Draws a point accompanied of a text."""
         x, y = self.parse_point(point)
-        xt, yt = self.parse_point((x + offset_x, y - offset_y))
+        x_text, y_text = self.parse_point((x + offset_x, y - offset_y))
         cv2.circle(image, (x, y), radius, point_color, -1)
         cv2.putText(
-            image, text, (xt, yt), font, font_scale, text_color, thickness, cv2.LINE_AA
+            image, text, (x_text, y_text), font, font_scale, text_color, thickness, cv2.LINE_AA
         )
         return image
 

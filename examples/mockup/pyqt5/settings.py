@@ -27,7 +27,7 @@ streamSettings = {
 
 cameraSettings = {
     "webcam": {
-        "src": 0,
+        "src": "http://172.17.184.105:3000/video/mjpeg",
         "fps": None,
         "size": [600, 400],
         "flipX": True,

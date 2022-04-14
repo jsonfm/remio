@@ -7,6 +7,7 @@ with open("requirements.txt") as f:
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+    long_description = long_description.replace("./docs/assets/images", "https://hikki12.github.io/remio/assets/images")
     # patch for unicodes
     long_description = long_description.replace("➶", ">>")
     long_description = long_description.replace("©", "(c)")

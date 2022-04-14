@@ -24,7 +24,11 @@ So I programmed the following architecture
 
 
 ## Install
-Clone the repository:
+Using pip:
+```
+pip install remio
+```
+Cloning the repository:
 ```
 git clone https://github.com/Hikki12/remio
 
@@ -32,6 +36,7 @@ cd remio
 
 pip install .
 ```
+
 ## Development
 If you are a devolper, install the library as follows:
 ```

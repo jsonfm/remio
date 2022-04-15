@@ -74,25 +74,32 @@ Las principales características de REMIO son:
 
 ## Instalación
 
-1.- Cree un entorno virutal:
+Cree un entorno virutal:
 ```sh
 python3 -m venv venv
-```
-2.- Active el entorno virtual:
-```
+
 source venv/bin/activate
 ```
-3.- Clone el repositorio e instale el paquete:
+Use pip:
+```sh
+pip install remio
 ```
-git clone https://github.com/Hikki12/remio && cd remio
+O clone el repositorio:
+```
+git clone https://github.com/Hikki12/remio
 
-pip install -U .
+cd remio
+
+pip install .
 ```
 
 ## Primeros Pasos
 Realizada la instalación del presente módulo, te sugerimos revisar alguno de los siguientes apartados:
 <ul>
 <li><a href="/remio/camera/overview/">Camera</a></li>
+<li><a href="/remio/serial/overview/">Serial</a></li>
+<li><a href="/remio/socketio/overview/">SocketIO</a></li>
+<li><a href="/remio/mockup/overview/">Mockup</a></li>
 </ul>
 <br>
 <br>

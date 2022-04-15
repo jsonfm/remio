@@ -174,6 +174,7 @@ class Serial(Emitter):
         Args:
             message: string to be sent.
             end: newline character to be concated with the message.
+            asJson: convert to JSON?
         """
         if self.serial.isOpen():
             try:

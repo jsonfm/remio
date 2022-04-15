@@ -1,11 +1,4 @@
-"""Example experiment.
-
-author: Jason Francisco Macas Mora
-email: franciscomacas3@gmail.com
-license: Apache 2.0
-year: 2022
-
-"""
+"""Example experiment."""
 from remio import Mockup
 from routes import *
 from settings import (
@@ -66,4 +59,9 @@ if __name__ == "__main__":
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
     )
-    experiment.start(camera=True, serial=False, socket=True, streamer=True, wait=True)
+    experiment.start(
+        camera=True, 
+        serial=False, socket=True, 
+        streamer=True, 
+        wait=True
+    )

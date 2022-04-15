@@ -36,3 +36,11 @@ class CustomSocketIO(Client):
 
     def isConnected(self):
         return not self.connected
+
+    def toogle(self, value: bool):
+        if value:
+            self.start()
+        else:
+            self.stop()
+    
+    

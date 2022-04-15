@@ -106,11 +106,11 @@ camera.stopAll()
 
 
 ## Processing
-Para facilitar el uso de funciones de procesamiento, el módulo de `Camera` y el de `Cameras` permiten agregar rutinas al hilo de ejecución.
+Para facilitar el uso de funciones de procesamiento, el módulo de `Camera` y el de `Cameras` permiten agregar rutinas a sus respectivos hilo de ejecución.
 
 <figure markdown>
-  ![Reading Flow](./assets/images/reading-flow.png){ width="300" }
-  <figcaption>Figura. Flujo de lectura</figcaption>
+  ![Reading Flow](../../assets/images/reading-flow.png){ width="300" }
+  <figcaption><b>Figura</b> Flujo de lectura</figcaption>
 </figure>
 
 ```python

@@ -1,11 +1,4 @@
-"""Example experiment.
-
-author: Jason Francisco Macas Mora
-email: franciscomacas3@gmail.com
-license: Apache 2.0
-year: 2022
-
-"""
+"""Example experiment with GUI."""
 import os
 import sys
 from PyQt5 import uic
@@ -35,6 +28,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.configureGUI()
         self.configureSerial()
         self.configureSocket()
+        self.configureTimers()
 
     def configureGUI(self):
         """Configures buttons events."""
@@ -43,10 +37,6 @@ class CustomMockup(QMainWindow, Mockup):
         self.streamBtn.clicked.connect(lambda value: self.streamer.setPause(value))
         self.ledSerial.clicked.connect(lambda value: self.reconnectSerial(value))
         self.ledSocket.clicked.connect(lambda value: self.reconnectSocket(value))
-
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.updateVideo)
-        self.timer.start(1000 // 10)  # 1000 // FPS
 
     def configureSerial(self):
         """Configures serial on/emit events."""
@@ -59,6 +49,12 @@ class CustomMockup(QMainWindow, Mockup):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
         self.socket.on(DATA_CLIENT_SERVER, self.setControlVariables)
+
+    def configureTimers(self):
+        """Configures some timers."""
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.updateVideo)
+        self.timer.start(1000 // 10)  # 1000 // FPS
 
     def socketConnectionStatus(self):
         """Shows the connection socket status."""
@@ -79,7 +75,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.ledSerial.setChecked(status.get("arduino", False))
 
     def serialDataIncoming(self, data: str):
-        """Read incoming data from the serial device."""
+        """Reads incoming data from the serial device."""
         data = self.serial.toJson(data)
         self.socket.on(DATA_CLIENT_SERVER, data)
 
@@ -95,12 +91,9 @@ class CustomMockup(QMainWindow, Mockup):
             self.serial["arduino"].disconnect()
         self.ledSerial.setChecked(self.serial["arduino"].isConnected())
 
-    def reconnectSocket(self, value):
+    def reconnectSocket(self, value: bool = True):
         """Updates the socketio connection."""
-        if value:
-            self.socket.start()
-        else:
-            self.socket.stop()
+        self.socket.toogle(value)
         self.ledSocket.setChecked(self.socket.isConnected())
 
     def updateVideo(self):
@@ -110,12 +103,12 @@ class CustomMockup(QMainWindow, Mockup):
         self.streamer.stream({"webcam": image})
 
     def updateVideoPauseState(self, status: bool):
-        """Update video pause status."""
+        """Updates video pause status."""
         self.camera["webcam"].setPause(status)
         self.streamer.setPause(status)
 
     def closeEvent(self, e):
-        """stops running threads/processes when close the windows."""
+        """Stops running threads/processes when close the windows."""
         self.stop()
 
 
@@ -127,6 +120,12 @@ if __name__ == "__main__":
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
     )
-    experiment.start(camera=True, serial=False, socket=True, streamer=False, wait=False)
+    experiment.start(
+        camera=True, 
+        serial=False, 
+        socket=False, 
+        streamer=False, 
+        wait=False
+    )
     experiment.show()
     sys.exit(app.exec_())

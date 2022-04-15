@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QImage
+from threading import Timer
 import numpy as np
 import cv2
-from threading import Timer
 
 
 class QImageLabel(QLabel):

@@ -238,6 +238,9 @@ margin-top: 10px;
           <property name="text">
            <string>Button 1</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -245,12 +248,18 @@ margin-top: 10px;
           <property name="text">
            <string>Button 2</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="btn3">
           <property name="text">
            <string>Button 3</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

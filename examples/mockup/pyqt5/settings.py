@@ -8,14 +8,16 @@ config = AutoConfig(search_path="./.env")
 # ------------------------ SERVER SETTINGS ------------------------------------
 
 serverSettings = {
-    "address": config("address", default="http://localhost:3000", cast=str),
+    # "address": config("address", default="http://localhost:3000", cast=str),
+    "address": "http://localhost:3000",
     "request_timeout": 10,
 }
+print("server: ", serverSettings)
 # ------------------------- STREAM SETTINGS -----------------------------------
 
 streamSettings = {
     "endpoint": STREAM_CLIENT_SERVER,
-    "quality": 30,
+    "quality": 60,
     "fps": 10,
     "colorspace": "bgr",
     "colorsubsampling": "422",

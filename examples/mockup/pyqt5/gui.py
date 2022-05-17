@@ -13,6 +13,7 @@ from settings import (
     cameraSettings,
     serialSettings,
 )
+from utils import Variables, CountTimer
 
 
 ui_path = os.path.dirname(os.path.abspath(__file__))
@@ -26,9 +27,16 @@ class CustomMockup(QMainWindow, Mockup):
         super().__init__(*args, **kwargs)
         uic.loadUi("gui.ui", self)
         self.configureGUI()
+        self.configureControlButtons()
         self.configureSerial()
         self.configureSocket()
         self.configureTimers()
+        self.variables = Variables({
+            "btn1": False,
+            "btn2": False,
+            "btn3": False,
+        })
+        # self.taskTimer = CountTimer(self, 1)
 
     def configureGUI(self):
         """Configures buttons events."""
@@ -37,6 +45,12 @@ class CustomMockup(QMainWindow, Mockup):
         self.streamBtn.clicked.connect(lambda value: self.streamer.setPause(value))
         self.ledSerial.clicked.connect(lambda value: self.reconnectSerial(value))
         self.ledSocket.clicked.connect(lambda value: self.reconnectSocket(value))
+
+    def configureControlButtons(self):
+        """Configures the control buttons."""
+        self.btn1.clicked.connect(lambda value: self.updateVariables("btn1", value))
+        self.btn2.clicked.connect(lambda value: self.updateVariables("btn2", value))
+        self.btn3.clicked.connect(lambda value: self.updateVariables("btn3", value))
 
     def configureSerial(self):
         """Configures serial on/emit events."""
@@ -48,7 +62,7 @@ class CustomMockup(QMainWindow, Mockup):
     def configureSocket(self):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
-        self.socket.on(DATA_CLIENT_SERVER, self.setControlVariables)
+        self.socket.on(DATA_SERVER_CLIENT, self.setVariables)
 
     def configureTimers(self):
         """Configures some timers."""
@@ -79,9 +93,15 @@ class CustomMockup(QMainWindow, Mockup):
         data = self.serial.toJson(data)
         self.socket.on(DATA_CLIENT_SERVER, data)
 
-    def setControlVariables(self, data: dict = {"arduino": {}}):
+    def setVariables(self, data: dict = {}):
         """Writes data coming from the server to the serial device."""
-        self.serial.write(message=data, asJson=True)
+        self.btn1.setChecked(data["btn1"])
+        self.btn2.setChecked(data["btn2"])
+        self.btn3.setChecked(data["btn3"])
+
+        # Say to the server the data were received (OK)
+        self.socket.emit(DATA_OK_CLIENT_SERVER) 
+        print("data: ", data)
 
     def reconnectSerial(self, value: bool):
         """Updates the serial port."""
@@ -107,8 +127,19 @@ class CustomMockup(QMainWindow, Mockup):
         self.camera["webcam"].setPause(status)
         self.streamer.setPause(status)
 
+    def checkVariablesSet(self):
+        if not self.variables.updated:
+            self.setVariables(self.variables.values())
+
+    def updateVariables(self, key: str, value: None):
+        """When a GUI event ocurrs, it updates the corresponding variables."""
+        self.variables.set(key, value)
+
+        # Send changes to the server
+        self.socket.emit(DATA_CLIENT_SERVER, self.variables.json())
+
     def closeEvent(self, e):
-        """Stops running threads/processes when close the windows."""
+        """Stops running threads/processes when close the window."""
         self.stop()
 
 
@@ -123,7 +154,7 @@ if __name__ == "__main__":
     experiment.start(
         camera=True, 
         serial=False, 
-        socket=False, 
+        socket=True, 
         streamer=False, 
         wait=False
     )

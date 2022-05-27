@@ -1,9 +1,7 @@
 """
 ===============================================
 remio library source-code is deployed under the Apache 2.0 License:
-
 Copyright (c) 2022 Jason Francisco Macas Mora(@Hikki12) <franciscomacas3@gmail.com>
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -32,7 +30,6 @@ from .sevent import Emitter
 
 class Serial(Emitter):
     """A custom serial class threaded and event emit based.
-
     Args:
         name: device name.
         reconnectDelay: wait time between reconnection attempts.
@@ -40,12 +37,10 @@ class Serial(Emitter):
         portsRefreshTime: time for check serial devices changes (secs).
         emitterIsEnabled: disable on/emit events (callbacks execution).
         emitAsDict: emit events on dict format {'emitter_name': data} ?
-
     Events:
         data: it's emitted when new data is available.
         connection: it's emitted when the connection status is updated.
         ports: it's emitted when a new device is found or disconnected.
-
     """
 
     def __init__(
@@ -170,7 +165,6 @@ class Serial(Emitter):
         self, message: Union[str, dict] = "", end: str = "\n", asJson: bool = False
     ):
         """Writes a message to the serial device.
-
         Args:
             message: string to be sent.
             end: newline character to be concated with the message.
@@ -219,24 +213,32 @@ class Serial(Emitter):
                     self.emit("ports", actualDevicesList)
                 self.time = 0
 
+    def checkConnectionStatus(self):
+        """Checks if the connection status changes."""
+        if self.lastConnectionState != self.serial.isOpen():
+            status = self.serial.isOpen()
+            if self.emitAsDict:
+                status = {self.name: status}
+            self.emit("connection", status)
+            self.lastConnectionState = self.serial.isOpen()
+
+    def reconnect(self):
+        """Tries to reconnect with the serial device."""
+        if self.hasDevice():
+            self.connect()
+            time.sleep(self.reconnectDelay)
+
     def run(self):
         """Here the run loop is executed."""
         while self.running.is_set():
             t0 = time.time()
 
-            if self.lastConnectionState != self.serial.isOpen():
-                status = self.serial.isOpen()
-                if self.emitAsDict:
-                    status = {self.name: status}
-                self.emit("connection", status)
-                self.lastConnectionState = self.serial.isOpen()
+            self.checkConnectionStatus()
 
             if self.serial.isOpen():
                 self.readData()
             else:
-                if self.hasDevice():
-                    self.connect()
-                    time.sleep(self.reconnectDelay)
+                self.reconnect()
 
             t1 = time.time()
             dt = t1 - t0
@@ -244,11 +246,16 @@ class Serial(Emitter):
             self.checkSerialPorts(dt)
             self.needAPause()
 
-    def disconnect(self):
-        """Clears the current serial port device."""
+    def disconnect(self, force: bool = False):
+        """Clears the current serial port device.
+        Args:
+            force: force disconnection? prevents reconnection.
+        """
         if self.serial.port is not None:
             self.serial.close()
             self.serial.port = None
+            if force:
+                self.port = None
 
     def stop(self):
         """Stops the read loop an closed the connection with the serial device."""
@@ -261,19 +268,16 @@ class Serial(Emitter):
 
 class Serials:
     """A class for manage multiple serial devices at the same time.
-
     Args:
         name: device name.
         reconnectDelay: wait time between reconnection attempts.
         maxAttempts: max read attempts.
         portsRefreshTime: time for check serial devices changes.
         emitterIsEnabled: disable on/emit events (callbacks execution).
-
     Events:
         data: it's emitted when new data is available.
         connection: it's emitted when the connection status is updated.
         ports: it's emitted when a new device is found or disconnected.
-
     """
 
     def __init__(self, devices: dict = {}, *args, **kwargs):
@@ -296,7 +300,6 @@ class Serials:
 
     def setDevices(self, devices: list = [], *args, **kwargs):
         """Updates the current serial devices list.
-
         Args:
             devices: serial devices list.
         """
@@ -312,7 +315,6 @@ class Serials:
 
     def startOnly(self, name: str = "default"):
         """Starts only one specific serial device.
-
         Args:
             name: device name.
         """
@@ -326,7 +328,6 @@ class Serials:
 
     def stopOnly(self, name: str = "default"):
         """Stops only one specific serial device.
-
         Args:
             name: device name.
         """
@@ -354,7 +355,6 @@ class Serials:
 
     def resumeOnly(self, deviceName: str = "default"):
         """Resumes a specific camera device.
-
         Args:
             deviceName: camera device name.
         """
@@ -369,7 +369,6 @@ class Serials:
 
     def toJson(self, data: str = ""):
         """Converts a string to a json.
-
         Args:
             data: a string message.
         """
@@ -387,7 +386,6 @@ class Serials:
         asJson: bool = False,
     ):
         """Writes a message to a specific serial device.
-
         Args:
             deviceName: name of the serial device.
             message: message to be written.
@@ -399,7 +397,6 @@ class Serials:
 
     def write(self, message: dict = {}, end: str = "\n", asJson: bool = False):
         """Writes a message given a dict with the device name and the message.
-
         Args:
             message: message to be written.
             end: newline character to be concated with the message.
@@ -412,7 +409,6 @@ class Serials:
     def on(self, eventName: str = "", callback=None, *args, **kwargs):
         """A wrapper function for use on/emit functions. It defines a specific event
         to every serial devices listed on current instance.
-
         Args:
             eventName: name of the event to be signaled.
             callback: callback function

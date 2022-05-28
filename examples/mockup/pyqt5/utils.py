@@ -12,7 +12,7 @@ def processing(frame: np.ndarray = None):
     return frame
 
 
-class ReusableTimer:
+class PausableTimer:
     """A timer with a recurrent task."""
     def __init__(self, interval = None, callback = None, *args, **kwargs):
         super().__init__(*args, **kwargs)

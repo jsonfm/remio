@@ -18,7 +18,7 @@ print("server: ", serverSettings)
 streamSettings = {
     "endpoint": STREAM_CLIENT_SERVER,
     "quality": 60,
-    "fps": 10,
+    "fps": 15,
     "colorspace": "bgr",
     "colorsubsampling": "422",
     "fastdct": True,
@@ -46,7 +46,7 @@ cameraSettings = {
 
 serialSettings = {
     "arduino": {
-        "port": "/dev/cu.usbserial-1430",
+        "port": "/dev/cu.usbserial-1460",
         "baudrate": 9600,
         "timeout": 1.0,
         "reconnectDelay": 5,

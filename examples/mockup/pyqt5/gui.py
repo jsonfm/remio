@@ -155,7 +155,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.streamer.setPause(status)
 
     def superviseVariablesStreaming(self):
-        """"Checks the variables updated status and restores the backup if necessary."""
+        """Checks the variables updated status and restores the backup if necessary.`"""
         # If variables not reached the web then restore the backup
         if not self.variables.updated():
             self.variables.restore()

@@ -16,7 +16,7 @@ print("server: ", serverSettings)
 # ------------------------- STREAM SETTINGS -----------------------------------
 
 streamSettings = {
-    "endpoint": STREAM_CLIENT_SERVER,
+    "endpoint": EXPERIMENT_STREAMS_VIDEO_SERVER,
     "quality": 60,
     "fps": 15,
     "colorspace": "bgr",

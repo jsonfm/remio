@@ -60,8 +60,9 @@ class CustomMockup(QMainWindow, Mockup):
     def configureSocket(self):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
-        self.socket.on(DATA_SERVER_CLIENT, self.receiveVariables)
-        self.socket.on(DATA_OK_SERVER_CLIENT, self.streamVariablesOK)
+        self.socket.on(SERVER_SENDS_DATA_EXPERIMENT, self.receiveVariables)
+        self.socket.on(SERVER_NOTIFIES_DATA_WERE_RECEIVED_EXPERIMENT, self.streamVariablesOK)
+        self.socket.on(SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False))
 
     def configureTimers(self):
         """Configures some timers."""
@@ -102,7 +103,7 @@ class CustomMockup(QMainWindow, Mockup):
     def serialPortsUpdate(self, ports: list):
         """Sends to the server the list of serial devices."""
         event = {"serial": {"ports": ports}}
-        self.socket.emit(EVENT_CLIENT_SERVER, event)
+        self.socket.emit(EXPERIMENT_EMITS_EVENT_SERVER, event)
         self.devices.clear()
         self.devices.addItems(ports)
 
@@ -135,7 +136,7 @@ class CustomMockup(QMainWindow, Mockup):
         status = self.socket.isConnected()
         self.ledSocket.setChecked(status)
         if status: 
-            self.socket.emit(JOIN_ROOM_CLIENT, MOCKUP_ROOM)
+            self.socket.emit(EXPERIMENT_JOINS_ROOM_SERVER, MOCKUP_ROOM)
 
     def socketReconnect(self, value: bool = True):
         """Updates the socketio connection."""
@@ -173,7 +174,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.setVariablesOnGUI()
         
         # Say to the server the data were received (OK)
-        self.socket.emit(DATA_OK_CLIENT_SERVER)
+        self.socket.emit(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER)
 
     def updateVariables(self, key: str, value=None):
         """Updates the variables values and streams they to the server."""
@@ -186,14 +187,15 @@ class CustomMockup(QMainWindow, Mockup):
 
         self.streamVariables()
 
-    def streamVariables(self):
+    def streamVariables(self, lock: bool = True):
         """Streams variables to the web."""
         # Send changes to the server
-        self.socket.emit(DATA_CLIENT_SERVER, self.variables.json())
+        self.socket.emit(EXPERIMENT_SENDS_DATA_SERVER, self.variables.json())
 
         # Lock the GUI a wait for a response
-        self.lockGUI()
-        self.variablesTimer.resume(now=False) 
+        if lock:
+            self.lockGUI()
+            self.variablesTimer.resume(now=False) 
 
     def streamVariablesOK(self):
         """It's called when the server notifies variables were received correctly."""
@@ -216,7 +218,7 @@ if __name__ == "__main__":
     )
     experiment.start(
         camera=True, 
-        serial=True, 
+        serial=False, 
         socket=True, 
         streamer=False, 
         wait=False

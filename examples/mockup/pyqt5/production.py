@@ -30,8 +30,9 @@ class CustomMockup(Mockup):
     def configureSocket(self):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
-        self.socket.on(DATA_SERVER_CLIENT, self.receiveVariables)
-        self.socket.on(DATA_OK_SERVER_CLIENT, self.streamVariablesOK)
+        self.socket.on(EXPERIMENT_SENDS_DATA_SERVER, self.receiveVariables)
+        self.socket.on(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER, self.streamVariablesOK)
+        self.socket.on(SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False))
 
     def configureTimers(self):
         """Configures some timers."""
@@ -58,7 +59,7 @@ class CustomMockup(Mockup):
     def socketConnectionStatus(self):
         """Shows the connection socket status."""
         if self.socket.isConnected(): 
-            self.socket.emit(JOIN_ROOM_CLIENT, MOCKUP_ROOM)
+            self.socket.emit(EXPERIMENT_JOINS_ROOM_SERVER, MOCKUP_ROOM)
 
     def superviseVariablesStreaming(self):
         """"Checks the variables updated status and restores the backup if necessary."""
@@ -78,15 +79,16 @@ class CustomMockup(Mockup):
         self.serial["arduino"].write(self.variables.json())
         
         # Say to the server the data were received (OK)
-        self.socket.emit(DATA_OK_CLIENT_SERVER)
+        self.socket.emit(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER)
 
-    def streamVariables(self):
+    def streamVariables(self, lock: bool = True):
         """Streams variables to the web."""
         # Send changes to the server
-        self.socket.emit(DATA_CLIENT_SERVER, self.variables.json())
+        self.socket.emit(EXPERIMENT_SENDS_DATA_SERVER, self.variables.json())
 
         # Lock the GUI a wait for a response
-        self.variablesTimer.resume(now=False) 
+        if lock:
+            self.variablesTimer.resume(now=False) 
 
     def streamVariablesOK(self):
         """It's called when the server notifies variables were received correctly."""

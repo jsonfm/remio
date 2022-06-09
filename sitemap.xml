@@ -2,67 +2,77 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://hikki12.github.io/remio/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/examples/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/license/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/camera/multiple/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/camera/overview/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/camera/single/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/mockup/mockup/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://hikki12.github.io/remio/mockup/overview/</loc>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/mockup/examples/pyqt5/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/serial/multiple/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/serial/overview/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/serial/single/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/serial/usage/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://hikki12.github.io/remio/socketio/overview/</loc>
-         <lastmod>2022-04-15</lastmod>
+         <lastmod>2022-06-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://hikki12.github.io/remio/streamer/</loc>
+         <lastmod>2022-06-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

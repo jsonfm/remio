@@ -40,14 +40,14 @@ bool serialMessageReceived = false;
 
 // INITIALIZE A JSON OBJECT -------------------<
 
-StaticJsonvariablesument<512> variables;
+StaticJsonDocument<512> variables;
 
 // DEFINE CONTROL VARIABLES -------------------<
 
 bool running = false;
-unsigned long dt1 = 0;
-unsigned long dt2 = 0;
-unsigned long dt3 = 0;
+bool btn1 = false;
+bool btn2 = false;
+bool btn3 = false;
 
 // DEFINE INTERNAL VARIABLES ------------------<
 
@@ -57,7 +57,7 @@ bool isInUse = false;
 
 // STOP TIMER ---------------------------------<
 
-const long STOP_TIMER_INTERVAL = 60000; //ms
+const long STOP_TIMER_INTERVAL = 10000; //ms
 const int TIME_MINUTES_LIMIT = 2; 
 SimpleTimer stopTimer(STOP_TIMER_INTERVAL);
 int stopMinutes = 0;
@@ -68,7 +68,8 @@ int stopMinutes = 0;
 void autoStop(){
 
   if(stopTimer.isReady()){
-    stopMinutes++;
+//    stopMinutes++;
+    sendControlVariables();
     stopTimer.reset();
   }
 
@@ -93,10 +94,9 @@ void resetStopTimer(){
 * It sends the control variables as JSON object thorugh the serial.
 */
 void sendControlVariables(){
-  variables["running"] = running;
-  variables["dt1"] = dt1;
-  variables["dt2"] = dt2;
-  variables["dt3"] = dt3;
+  variables["btn1"] = btn1;
+  variables["btn2"] = btn2;
+  variables["btn3"] = btn3;
   serializeJson(variables, Serial);  
   Serial.println();
 }
@@ -105,7 +105,7 @@ void sendControlVariables(){
 * It notifies some data were received.
 */
 void notifyDataWereReceived(){
-  Serial.println("$recived");
+  Serial.println("$received");
 }
 
 /*
@@ -118,9 +118,9 @@ void readControlVariables(){
     return;
   }
 
-  dt1 = variables["dt1"];
-  dt2 = variables["dt2"];
-  dt3 = variables["dt3"];
+  btn1 = variables["btn1"];
+  btn2 = variables["btn2"];
+  btn3 = variables["btn3"];
 
   notifyDataWereReceived();
 }

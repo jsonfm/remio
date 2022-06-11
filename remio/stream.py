@@ -14,7 +14,6 @@ class MJPEGEncoder:
     """MJPEG encoder based on simplejpeg library.
 
     Args:
-        image: uncompressed image as uint8 array
         quality: JPEG quantization factor
         colorspace: source colorspace; one of
                         'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',

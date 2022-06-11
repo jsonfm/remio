@@ -7,7 +7,8 @@ from settings import (
     cameraSettings,
     serialSettings,
 )
-from utils import Variables, PausableTimer
+from timers import PausableTimer
+from variables import Variables
 
 
 MOCKUP_ROOM = "room-x"

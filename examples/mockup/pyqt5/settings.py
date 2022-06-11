@@ -4,12 +4,12 @@ from utils import processing
 from routes import *
 
 # ENV PATH
-config = AutoConfig(search_path="./.env")
+config = AutoConfig(search_path=".")
 # ------------------------ SERVER SETTINGS ------------------------------------
 
 serverSettings = {
     # "address": config("address", default="http://localhost:3000", cast=str),
-    "address": "http://localhost:3000",
+    "address": "http://localhost:3000/",
     "request_timeout": 10,
 }
 print("server: ", serverSettings)
@@ -17,8 +17,8 @@ print("server: ", serverSettings)
 
 streamSettings = {
     "endpoint": EXPERIMENT_STREAMS_VIDEO_SERVER,
-    "quality": 60,
-    "fps": 15,
+    "quality": 40,
+    "fps": 12,
     "colorspace": "bgr",
     "colorsubsampling": "422",
     "fastdct": True,

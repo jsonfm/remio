@@ -13,7 +13,8 @@ from settings import (
     cameraSettings,
     serialSettings,
 )
-from utils import Variables, PausableTimer
+from timers import PausableTimer
+from variables import Variables
 
 
 ui_path = os.path.dirname(os.path.abspath(__file__))
@@ -63,12 +64,13 @@ class CustomMockup(QMainWindow, Mockup):
         self.socket.on(SERVER_SENDS_DATA_EXPERIMENT, self.receiveVariables)
         self.socket.on(SERVER_NOTIFIES_DATA_WERE_RECEIVED_EXPERIMENT, self.streamVariablesOK)
         self.socket.on(SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False))
+        self.socket.on(SERVER_STREAMER_SET_PAUSE_EXPERIMENT, lambda pause: self.updateVideoPauseState(pause))
 
     def configureTimers(self):
         """Configures some timers."""
         self.videoTimer = QTimer()
         self.videoTimer.timeout.connect(self.updateVideo)
-        self.videoTimer.start(1000 // 10)  # 1000 // FPS
+        self.videoTimer.start(1000 // 15)  # 1000 // FPS
         self.variablesTimer = PausableTimer(3, self.superviseVariablesStreaming)
 
     def configureVariables(self):
@@ -94,10 +96,10 @@ class CustomMockup(QMainWindow, Mockup):
 
     def setVariablesOnGUI(self):
         """Sets variables on the GUI."""
-        data = self.variables.values()
-        self.btn1.setChecked(data["btn1"])
-        self.btn2.setChecked(data["btn2"])
-        self.btn3.setChecked(data["btn3"])
+        variables = self.variables.values()
+        self.btn1.setChecked(variables["btn1"])
+        self.btn2.setChecked(variables["btn2"])
+        self.btn3.setChecked(variables["btn3"])
 
     # Serial
     def serialPortsUpdate(self, ports: list):
@@ -177,7 +179,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.socket.emit(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER)
 
     def updateVariables(self, key: str, value=None):
-        """Updates the variables values and streams they to the server."""
+        """Updates variables values and streams they to the server."""
         # Set a new single variable value
         self.variables.set(key, value)
         self.variables.setUpdated(False)
@@ -188,11 +190,11 @@ class CustomMockup(QMainWindow, Mockup):
         self.streamVariables()
 
     def streamVariables(self, lock: bool = True):
-        """Streams variables to the web."""
+        """Streams variables to the server."""
         # Send changes to the server
         self.socket.emit(EXPERIMENT_SENDS_DATA_SERVER, self.variables.json())
 
-        # Lock the GUI a wait for a response
+        # Lock the GUI and wait for a response
         if lock:
             self.lockGUI()
             self.variablesTimer.resume(now=False) 
@@ -220,7 +222,7 @@ if __name__ == "__main__":
         camera=True, 
         serial=False, 
         socket=True, 
-        streamer=False, 
+        streamer=False, # disable automatic streaming
         wait=False
     )
     experiment.show()

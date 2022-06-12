@@ -4,3 +4,4 @@ from .socketAsync import CustomAsyncSocketIO
 from .socketSync import CustomSocketIO
 from .stream import MJPEGEncoder, SocketStreamer
 from .mockup import Mockup
+from .httpservers import MJPEGServer

@@ -144,7 +144,17 @@ class Camera(Emitter):
 
     def __del__(self):
         self.stop()
+    
+    def __read(self):
+        """Call opencv API for read a frame"""
+        if self.isConnected():
+            deviceIsAvailable, frame = self.device.read()
+            if deviceIsAvailable:
+                return frame
 
+    def isThreaded(self):
+        return self.running.is_set()
+    
     def createBackground(
         self,
         text: str = "Device not available",
@@ -248,6 +258,7 @@ class Camera(Emitter):
         self.device = cv2.VideoCapture(self.src)
         if not self.isConnected():
             print(f"-> {self.name} : {self.src} :: could not be connected.")
+        return self
 
     def reconnect(self):
         """Tries to reconnect with the camera device."""
@@ -332,9 +343,36 @@ class Camera(Emitter):
         if self.isConnected():
             while self.queueModeEnabled:
                 return self.queue.get(timeout=timeout)
+            if not self.isThreaded():
+                self.frame = self.preprocess(self.__read())
             return self.frame
         else:
             return self.background
+
+    def jpeg(self, base64: bool = False, 
+        quality: int = None, colorspace: str = None,
+        colorsubsampling: str = None, fastdct: bool = True
+    ) -> Union[bytes, str]:
+        """Returns a frame on jpeg format(bytes or base64 string).
+        Args:
+            base64: encode image in base64 format?
+            quality: JPEG quantization factor
+            colorspace: source colorspace; one of
+                            'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
+                            'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
+            colorsubsampling: subsampling factor for color channels; one of
+                                    '444', '422', '420', '440', '411', 'Gray'.
+            fastdct: If True, use fastest DCT method;
+                            speeds up encoding by 4-5% for a minor loss in quality
+        """
+        return self.encoder.encode(
+            frame=self.read(), 
+            base64=base64,
+            quality=quality,
+            colorspace=colorspace,
+            colorsubsampling=colorsubsampling,
+            fastdct=fastdct,
+        )
 
     def applyDelay(self):
         """If a fps was defined it will wait for respective delay."""

@@ -1,109 +1,10 @@
 """Stream Utils/Classes."""
-
 from typing import Union, Callable
 from threading import Thread, Event, Lock
 import time
 import numpy as np
-import base64 as b64
-import simplejpeg
-
 from socketio import Client
-
-
-class MJPEGEncoder:
-    """MJPEG encoder based on simplejpeg library.
-
-    Args:
-        quality: JPEG quantization factor
-        colorspace: source colorspace; one of
-                        'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
-                        'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
-        colorsubsampling: subsampling factor for color channels; one of
-                                '444', '422', '420', '440', '411', 'Gray'.
-        fastdct: If True, use fastest DCT method;
-                        speeds up encoding by 4-5% for a minor loss in quality
-
-    """
-
-    def __init__(
-        self,
-        quality: int = 85,
-        colorspace: str = "rgb",
-        colorsubsampling: str = "444",
-        fastdct: bool = True,
-        *args,
-        **kwargs,
-    ):
-        self.quality = quality
-        self.colorspace = colorspace
-        self.colorsubsampling = colorsubsampling
-        self.fastdct = fastdct
-
-    def setParams(
-        self,
-        quality: int = 85,
-        colorspace: str = "rgb",
-        colorsubsampling: str = "444",
-        fastdct: bool = True,
-    ):
-        """Updates the encoder params.
-
-        Args:
-            image: uncompressed image as uint8 array
-            quality: JPEG quantization factor
-            colorspace: source colorspace; one of
-                            'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
-                            'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
-            colorsubsampling: subsampling factor for color channels; one of
-                                    '444', '422', '420', '440', '411', 'Gray'.
-            fastdct: If True, use fastest DCT method;
-                            speeds up encoding by 4-5% for a minor loss in quality
-
-        """
-        self.quality = quality
-        self.colorspace = colorspace
-        self.colorsubsampling = colorsubsampling
-        self.fastdct = fastdct
-
-    def encode(
-        self, frame: np.ndarray = None, base64: bool = True
-    ) -> Union[bytes, str]:
-        """Encodes an array of images in JPEG format and, if possible, convert it to base64.
-
-        Args:
-            frame: image array
-            base64: encode image in base64 format?
-
-        Returns:
-            jpeg: encoded image as JPEG (JFIF) data or base64 string
-
-        """
-        if frame is not None:
-            colorspace = self.colorspace
-
-            if frame.ndim == 2:
-                frame = frame[:, :, np.newaxis]
-                colorspace = "GRAY"
-
-            jpeg = simplejpeg.encode_jpeg(
-                frame,
-                self.quality,
-                colorspace,
-                self.colorsubsampling,
-                self.fastdct,
-            )
-
-            if base64:
-                jpeg = b64.b64encode(jpeg).decode()
-
-            return jpeg
-
-    def multipleEncode(self, frames: dict):
-        """Encodes a dict with numpy arrays (frames)."""
-        if isinstance(frames, dict):
-            return {k: self.encode(v) for k, v in frames.items()}
-        else:
-            return self.encode(frames)
+from .mjpeg import MJPEGEncoder
 
 
 class SocketStreamer:
@@ -127,8 +28,6 @@ class SocketStreamer:
         *args,
         **kwargs,
     ):
-        # if not isinstance(socket, (type(None), type(Client))):
-        #     raise ValueError("socket must be a socketio client or a custom socket class.")
         self.socket = socket
         self.encoder = MJPEGEncoder(*args, **kwargs)
         self.lastFrame = None
@@ -137,7 +36,11 @@ class SocketStreamer:
         self.fps = fps
         self.endpoint = endpoint
         self.enabled = enabled
-        self.thread = Thread(target=self.run, name="stream-thread", daemon=True)
+        self.thread = Thread(
+            target=self.run, 
+            name="stream-thread", 
+            daemon=True
+        )
         self.running = Event()
         self.pauseEvent = Event()
         self.streamLock = Lock()
@@ -199,13 +102,13 @@ class SocketStreamer:
             self.thread.join()
 
     def readAndStream(self, *args, **kwargs):
-        """ "Reads and streams available frames."""
+        """Reads and streams available frames."""
         if self.hasSocket() and self.hasReader():
             frames = self.reader(*args, **kwargs)
             self.stream(frames)
 
     def stream(self, frames: np.ndarray):
-        """streams a frame directly to the endpoint.
+        """Streams a frame directly to the endpoint.
 
         Args:
             frame: image array
@@ -219,7 +122,7 @@ class SocketStreamer:
                     try:
                         self.socket.emit(self.endpoint, frames)
                     except Exception as e:
-                        print(f"streamer:: {e}")
+                        print(f"Streamer:: {e}")
                     self.streamLock.release()
 
     def run(self):

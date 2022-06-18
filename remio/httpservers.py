@@ -1,7 +1,7 @@
 """HTTP server functionalities."""
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-import time
 from .stream import MJPEGEncoder
 
 
@@ -28,7 +28,7 @@ class Handler(BaseHTTPRequestHandler):
                     time.sleep(1 / fps) 
 
                 except Exception as e:
-                    print("error: ", e)
+                    print("--> MJPEGHandler error: ", e)
                     break
 
 
@@ -46,7 +46,14 @@ class ThreadedHTTPServer(ThreadingMixIn, CustomHTTPServer):
 
 
 class MJPEGServer:
-    """A MJPEG server class"""
+    """A MJPEG server class based on HTTPServer and ThreadingMixIn.
+    Args:
+        camera: A camera instance.
+        fps: server fps to stream.
+        ip: ip address of the server.
+        port: port value of the server.
+        enconderSettings: MJPEG encoder settings.
+    """
     def __init__(self, 
         camera = None,
         fps: int = 10,
@@ -63,6 +70,8 @@ class MJPEGServer:
         **kwargs
     ):
         self.camera = camera
+        self.ip = ip
+        self.port = port
         self.fps = fps
         self.encoder = MJPEGEncoder(**encoderSettings)
         self.server = ThreadedHTTPServer(
@@ -73,6 +82,27 @@ class MJPEGServer:
             RequestHandlerClass=Handler
         )
 
-    def run(self):
-        """Executes the streaming loop."""
-        self.server.serve_forever()
+    def run(self, display_url: bool = True, start_camera: bool = True):
+        """Executes the streaming loop.
+        Args:
+            display_url: show a url with the server address?
+            start_camera: call start method of the camera instance?
+        """
+        try:
+            if display_url:
+                print(f"MJPEG server running on http://{self.ip}:{self.port}")
+            if start_camera:
+                self.camera.start()
+            self.server.serve_forever()
+        except Exception as e:
+            print(f"--> MJPEG server: {e}")
+            self.stop()
+
+    def stop(self, stop_camera: bool = True):
+        """Stops the mjpeg server.
+        Args:
+            stop_camera: call the stop method of the camera?
+        """
+        self.server.shutdown()
+        if self.camera is not None and stop_camera:
+            self.camera.stop()

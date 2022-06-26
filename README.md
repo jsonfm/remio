@@ -47,7 +47,11 @@ source venv/bin/activate
 ```
 After choose an option for install remio, for example using pip:
 ```
+# Pypi source
 pip install remio
+
+# Github source
+pip install "git+https://github.com/Hikki12/remio"
 ```
 Or if you prefer, clone the repository:
 ```

@@ -10,3 +10,6 @@
 **Release 0.1.0.a** - 2022-06-18
 - Added an MJPEG server
 - Added JPEG encoder on Camera API
+
+**Release 0.1.1** - 2022-06-26
+- Improved MJPEG Server

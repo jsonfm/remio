@@ -36,11 +36,20 @@ So I programmed the following architecture
 <!-- ----------------------------------------- -->
 
 ## Installation
-Using pip:
+
+First you need to create a virtualenv:
+```
+python3 -m venv venv
+```
+Then you should active it:
+```
+source venv/bin/activate
+```
+After choose an option for install remio, for example using pip:
 ```
 pip install remio
 ```
-Cloning the repository:
+Or if you prefere, cloning the repository:
 ```
 git clone https://github.com/Hikki12/remio
 
@@ -169,7 +178,7 @@ while True:
 <!-- ----------------------------------------- -->
 
 ## Simplejpeg API
-REMIO uses [simplejpeg](https://gitlab.com/jfolz/simplejpeg) library for encode camera images. You could used it's API as follows:
+REMIO uses [simplejpeg](https://gitlab.com/jfolz/simplejpeg) library for encode camera images. You could used its API as follows:
 ```python
 import time
 from remio import Camera
@@ -183,6 +192,7 @@ while True:
 ```
 <!-- ----------------------------------------- -->
 ## A simple MJPEG Server
+You could server your camera image with the MJPEG server, with a few lines:
 ```python
 """A simple MJPEG."""
 from remio import Camera, MJPEGServer
@@ -190,7 +200,7 @@ from remio import Camera, MJPEGServer
 # Initialize camera device
 camera = Camera(src=0, fps=15, size=[800, 600], flipX=True)
 
-# Starts camera on another thread (Optional)
+# Start camera on another thread (Optional)
 camera.start()
 
 # Configure MJPEG Server
@@ -202,6 +212,10 @@ try:
     server.run(display_url=True, start_camera=True)
 except KeyboardInterrupt:
     server.stop(stop_camera=True)
+```
+```bash
+# The video must be accessible through the generated link
+>> MJPEG server running on http://0.0.0.0:8080/video/mjpeg
 ```
 
 <!-- ----------------------------------------- -->

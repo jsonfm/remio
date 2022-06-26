@@ -144,7 +144,14 @@ class Tracker(object):
         x_text, y_text = self.parse_point((x + offset_x, y - offset_y))
         cv2.circle(image, (x, y), radius, point_color, -1)
         cv2.putText(
-            image, text, (x_text, y_text), font, font_scale, text_color, thickness, cv2.LINE_AA
+            image,
+            text,
+            (x_text, y_text),
+            font,
+            font_scale,
+            text_color,
+            thickness,
+            cv2.LINE_AA,
         )
         return image
 

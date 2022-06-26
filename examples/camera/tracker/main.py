@@ -7,7 +7,7 @@ from utils import Tracker
 # Intialize tracker
 robot = Tracker()
 
-# Define devices    
+# Define devices
 devices = {
     "webcam": {
         "src": 0,

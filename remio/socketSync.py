@@ -2,6 +2,8 @@ from socketio import Client
 
 
 class CustomSocketIO(Client):
+    """A custom socketio client."""
+
     def __init__(self, address: str = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.address = address
@@ -42,5 +44,3 @@ class CustomSocketIO(Client):
             self.start()
         else:
             self.stop()
-    
-    

@@ -7,7 +7,19 @@
 
 </div>
 
-A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi. It was born in the context of remote laboratories, hence its name, where I used and developed several prototypes where the code began to redound. That's where I extracted the modules from this library. The hardware architecture that I used to employ was the following:
+# Table of Contents
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Development](#development)
+5. [Simplejpeg API](#simplejpeg-api)
+6. [Simple MJPEG Server](#simple-mjpeg-server)
+7. [Multiple Cameras API](#multiple-cameras-api)
+8. [Multiple Serial API](#multiple-serial-api)
+9. [Examples](#examples)
+
+## Introduction
+REMIO is a library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi. It was born in the context of remote laboratories, hence its name, where I used and developed several prototypes where the code began to redound. That's where I extracted the modules from this library. The hardware architecture that I used to employ was the following:
 
 <img src="./docs/assets/images/arch-1.png" style="margin: 1rem 0;">
 
@@ -21,9 +33,9 @@ So I programmed the following architecture
 - Event-driven programming API for Cameras.
 - MJPEG streamer with SocketIO
 
+<!-- ----------------------------------------- -->
 
-
-## Install
+## Installation
 Using pip:
 ```
 pip install remio
@@ -37,12 +49,15 @@ cd remio
 pip install .
 ```
 
+<!-- ----------------------------------------- -->
+
 ## Development
 If you are a devolper, install the library as follows:
 ```
 pip install -e .
 ```
 
+<!-- ----------------------------------------- -->
 
 ## Multiple Cameras API
 ```python
@@ -111,9 +126,11 @@ cv2.destroyAllWindows()
 camera.stopAll()
 
 ```
+<!-- ----------------------------------------- -->
 
 ## Multiple Serial API
 ```python
+"""Multiple serial devices management."""
 import time
 from remio import Serials
 
@@ -149,6 +166,48 @@ while True:
     time.sleep(1)
 
 ```
+<!-- ----------------------------------------- -->
+
+## Simplejpeg API
+REMIO uses [simplejpeg](https://gitlab.com/jfolz/simplejpeg) library for encode camera images. You could used it's API as follows:
+```python
+import time
+from remio import Camera
+
+# Initialize camera device
+camera = Camera(src=0, fps=15, size=[800, 600], flipX=True)
+
+while True:
+    jpeg = camera.jpeg()
+    time.sleep(1/10)
+```
+<!-- ----------------------------------------- -->
+## A simple MJPEG Server
+```python
+"""A simple MJPEG."""
+from remio import Camera, MJPEGServer
+
+# Initialize camera device
+camera = Camera(src=0, fps=15, size=[800, 600], flipX=True)
+
+# Starts camera on another thread (Optional)
+camera.start()
+
+# Configure MJPEG Server
+server = MJPEGServer(
+    camera=camera, ip="0.0.0.0", port=8080, endpoint="/video/mjpeg", fps=15
+)
+
+try:
+    server.run(display_url=True, start_camera=True)
+except KeyboardInterrupt:
+    server.stop(stop_camera=True)
+```
+
+<!-- ----------------------------------------- -->
+
+## Examples
+You could see more examples [here](https://github.com/Hikki12/remio/tree/master/examples).
 
 Resources
 ---------

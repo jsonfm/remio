@@ -5,7 +5,7 @@ from sanic.response import text
 from routes import *
 
 
-sio = socketio.AsyncServer(async_mode='sanic')
+sio = socketio.AsyncServer(async_mode="sanic")
 app = Sanic(name="server")
 sio.attach(app)
 
@@ -35,5 +35,5 @@ async def callback(sid, data):
     print("data server: ", data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)

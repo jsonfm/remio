@@ -6,7 +6,10 @@ import time
 
 class PausableTimer:
     """A timer that executes a recurring task each certain time, using thread events for it."""
-    def __init__(self, interval: Union[int, float], callback: Callable = None, *args, **kwargs):
+
+    def __init__(
+        self, interval: Union[int, float], callback: Callable = None, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.interval = interval
         self.timeout = interval
@@ -57,17 +60,18 @@ class CountTimer:
         cb: a callback function
         interval: time in seconds.
     """
+
     def __init__(self, cb, interval: int = 1):
         self.lastTime = 0
         self.enabled = False
         self.cb = cb
         self.interval = interval
-    
+
     def start(self):
         """Starts the timer."""
         self.lastTime = time.time()
         self.enabled = True
-    
+
     def stop(self):
         """Stops the timer."""
         self.lastTime = 0
@@ -80,4 +84,3 @@ class CountTimer:
             if time.time() - self.lastTime <= self.interval:
                 self.cb()
                 self.lastTime = time.time()
-

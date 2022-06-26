@@ -4,7 +4,10 @@ from threading import Thread, Event
 
 class SetInterval:
     """A timer that executes a recurring task each certain time, using thread events for it."""
-    def __init__(self, interval: Union[int, float], callback: Callable = None, *args, **kwargs):
+
+    def __init__(
+        self, interval: Union[int, float], callback: Callable = None, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.interval = interval
         self.timeout = interval
@@ -47,4 +50,3 @@ class SetInterval:
         """Stops the timer execution."""
         self.resume(now=True)
         self._quit = True
-

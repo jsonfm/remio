@@ -7,7 +7,9 @@ with open("requirements.txt") as f:
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
-    long_description = long_description.replace("./docs/assets/images", "https://hikki12.github.io/remio/assets/images")
+    long_description = long_description.replace(
+        "./docs/assets/images", "https://hikki12.github.io/remio/assets/images"
+    )
     # patch for unicodes
     long_description = long_description.replace("➶", ">>")
     long_description = long_description.replace("©", "(c)")
@@ -16,7 +18,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="remio",
     packages=["remio"],
-    version="0.1.0.a",
+    version="0.1.1",
     description="A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -5,9 +5,11 @@ from remio import Camera
 
 image = None
 
-def read_frame(frames:dict):
+
+def read_frame(frames: dict):
     global image
     image = frames["webcam"]
+
 
 # Initialize Single Camera device
 camera = Camera(name="webcam", src=0, size=[400, 400], emitterIsEnabled=True)

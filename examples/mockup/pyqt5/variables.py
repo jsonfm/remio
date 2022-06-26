@@ -3,7 +3,7 @@ import json
 
 class Variables:
     """A variables dictionary with some extra functionalities, like state backup.
-    
+
     Args:
         variables: a dictionary with variables.
 
@@ -15,6 +15,7 @@ class Variables:
             'var4': False, # type: bool
         })
     """
+
     def __init__(self, variables: dict = {}):
         self.variables = variables
         self.backup = variables.copy()
@@ -25,10 +26,10 @@ class Variables:
 
     def __str__(self):
         return str(self.variables)
-    
+
     def __getitem__(self, key):
         return self.variables[key]
-    
+
     def __setitem__(self, key: str, value):
         self.variables[key] = value
 
@@ -41,7 +42,7 @@ class Variables:
         if backup:
             self.backup = self.variables.copy()
         self.variables[key] = value
-    
+
     def get(self, key: str):
         """Returns a specific variable value."""
         return self.variables[key]
@@ -65,7 +66,7 @@ class Variables:
     def setUpdated(self, value: bool):
         """Updates the updated status."""
         self.updatedStatus = value
-    
+
     def updated(self):
         """Returns the updated status."""
         return self.updatedStatus

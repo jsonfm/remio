@@ -32,8 +32,12 @@ class CustomMockup(Mockup):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
         self.socket.on(EXPERIMENT_SENDS_DATA_SERVER, self.receiveVariables)
-        self.socket.on(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER, self.streamVariablesOK)
-        self.socket.on(SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False))
+        self.socket.on(
+            EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER, self.streamVariablesOK
+        )
+        self.socket.on(
+            SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False)
+        )
 
     def configureTimers(self):
         """Configures some timers."""
@@ -41,11 +45,13 @@ class CustomMockup(Mockup):
 
     def configureVariables(self):
         """Configures control variables."""
-        self.variables = Variables({
-            "btn1": False,
-            "btn2": False,
-            "btn3": False,
-        })
+        self.variables = Variables(
+            {
+                "btn1": False,
+                "btn2": False,
+                "btn3": False,
+            }
+        )
 
     def serialDataIncoming(self, data: str):
         """Reads incoming data from the serial device."""
@@ -59,15 +65,15 @@ class CustomMockup(Mockup):
 
     def socketConnectionStatus(self):
         """Shows the connection socket status."""
-        if self.socket.isConnected(): 
+        if self.socket.isConnected():
             self.socket.emit(EXPERIMENT_JOINS_ROOM_SERVER, MOCKUP_ROOM)
 
     def superviseVariablesStreaming(self):
-        """"Checks the variables updated status and restores the backup if necessary."""
+        """ "Checks the variables updated status and restores the backup if necessary."""
         # If variables not reached the web then restore the backup
         if not self.variables.updated():
             self.variables.restore()
-        
+
         # Reset updated variables status and unlock the GUI
         self.variables.setUpdated(False)
         self.variablesTimer.pause(reset=True)
@@ -78,7 +84,7 @@ class CustomMockup(Mockup):
         print("--> received: ", data)
         self.variables.update(data)
         self.serial["arduino"].write(self.variables.json())
-        
+
         # Say to the server the data were received (OK)
         self.socket.emit(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER)
 
@@ -89,7 +95,7 @@ class CustomMockup(Mockup):
 
         # Lock the GUI a wait for a response
         if lock:
-            self.variablesTimer.resume(now=False) 
+            self.variablesTimer.resume(now=False)
 
     def streamVariablesOK(self):
         """It's called when the server notifies variables were received correctly."""
@@ -104,10 +110,4 @@ if __name__ == "__main__":
         cameraSettings=cameraSettings,
         serialSettings=serialSettings,
     )
-    experiment.start(
-        camera=True, 
-        serial=True, 
-        socket=True, 
-        streamer=True, 
-        wait=True
-    )
+    experiment.start(camera=True, serial=True, socket=True, streamer=True, wait=True)

@@ -22,7 +22,7 @@ class MJPEGEncoder:
     def __init__(
         self,
         quality: int = 85,
-        colorspace: str = "rgb",
+        colorspace: str = "bgr",
         colorsubsampling: str = "444",
         fastdct: bool = True,
         *args,
@@ -60,9 +60,13 @@ class MJPEGEncoder:
         self.fastdct = fastdct
 
     def encode(
-        self, frame: np.ndarray = None, base64: bool = True,
-        quality: int = None, colorspace: str = None, colorsubsampling: str = None,
-        fastdct: bool = False
+        self,
+        frame: np.ndarray = None,
+        base64: bool = True,
+        quality: int = None,
+        colorspace: str = None,
+        colorsubsampling: str = None,
+        fastdct: bool = False,
     ) -> Union[bytes, str]:
         """Encodes an array of images in JPEG format and, if possible, convert it to base64.
 
@@ -89,7 +93,9 @@ class MJPEGEncoder:
                 colorspace = "GRAY"
 
             quality = self.quality if quality is None else quality
-            colorsubsampling = self.colorsubsampling if colorsubsampling is None else colorsubsampling
+            colorsubsampling = (
+                self.colorsubsampling if colorsubsampling is None else colorsubsampling
+            )
             fastdct = self.fastdct if fastdct is None else fastdct
             jpeg = simplejpeg.encode_jpeg(
                 frame,
@@ -110,4 +116,3 @@ class MJPEGEncoder:
             return {k: self.encode(v) for k, v in frames.items()}
         else:
             return self.encode(frames)
-

@@ -26,6 +26,7 @@ MOCKUP_ROOM = "room-x"
 
 class CustomMockup(QMainWindow, Mockup):
     """A class for manage a mockup with a local GUI."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("gui.ui", self)
@@ -62,9 +63,16 @@ class CustomMockup(QMainWindow, Mockup):
         """Configures socket on/emit events."""
         self.socket.on("connection", self.socketConnectionStatus)
         self.socket.on(SERVER_SENDS_DATA_EXPERIMENT, self.receiveVariables)
-        self.socket.on(SERVER_NOTIFIES_DATA_WERE_RECEIVED_EXPERIMENT, self.streamVariablesOK)
-        self.socket.on(SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False))
-        self.socket.on(SERVER_STREAMER_SET_PAUSE_EXPERIMENT, lambda pause: self.updateVideoPauseState(pause))
+        self.socket.on(
+            SERVER_NOTIFIES_DATA_WERE_RECEIVED_EXPERIMENT, self.streamVariablesOK
+        )
+        self.socket.on(
+            SERVER_REQUESTS_DATA_EXPERIMENT, lambda: self.streamVariables(lock=False)
+        )
+        self.socket.on(
+            SERVER_STREAMER_SET_PAUSE_EXPERIMENT,
+            lambda pause: self.updateVideoPauseState(pause),
+        )
 
     def configureTimers(self):
         """Configures some timers."""
@@ -75,11 +83,13 @@ class CustomMockup(QMainWindow, Mockup):
 
     def configureVariables(self):
         """Configures control variables."""
-        self.variables = Variables({
-            "btn1": False,
-            "btn2": False,
-            "btn3": False,
-        })
+        self.variables = Variables(
+            {
+                "btn1": False,
+                "btn2": False,
+                "btn3": False,
+            }
+        )
 
     # GUI
     def lockGUI(self):
@@ -87,7 +97,7 @@ class CustomMockup(QMainWindow, Mockup):
         self.btn1.setEnabled(False)
         self.btn2.setEnabled(False)
         self.btn3.setEnabled(False)
-    
+
     def unlockGUI(self):
         """Unlocks the GUI elements."""
         self.btn1.setEnabled(True)
@@ -137,7 +147,7 @@ class CustomMockup(QMainWindow, Mockup):
         """Shows the connection socket status."""
         status = self.socket.isConnected()
         self.ledSocket.setChecked(status)
-        if status: 
+        if status:
             self.socket.emit(EXPERIMENT_JOINS_ROOM_SERVER, MOCKUP_ROOM)
 
     def socketReconnect(self, value: bool = True):
@@ -163,7 +173,7 @@ class CustomMockup(QMainWindow, Mockup):
         if not self.variables.updated():
             self.variables.restore()
             self.setVariablesOnGUI()
-        
+
         # Reset updated variables status and unlock the GUI
         self.variables.setUpdated(False)
         self.variablesTimer.pause(reset=True)
@@ -174,7 +184,7 @@ class CustomMockup(QMainWindow, Mockup):
         """Receives variables coming from the server."""
         self.variables.update(data)
         self.setVariablesOnGUI()
-        
+
         # Say to the server the data were received (OK)
         self.socket.emit(EXPERIMENT_NOTIFIES_DATA_WERE_RECEIVED_SERVER)
 
@@ -197,7 +207,7 @@ class CustomMockup(QMainWindow, Mockup):
         # Lock the GUI and wait for a response
         if lock:
             self.lockGUI()
-            self.variablesTimer.resume(now=False) 
+            self.variablesTimer.resume(now=False)
 
     def streamVariablesOK(self):
         """It's called when the server notifies variables were received correctly."""
@@ -219,11 +229,11 @@ if __name__ == "__main__":
         serialSettings=serialSettings,
     )
     experiment.start(
-        camera=True, 
-        serial=False, 
-        socket=True, 
-        streamer=False, # disable automatic streaming
-        wait=False
+        camera=True,
+        serial=False,
+        socket=True,
+        streamer=False,  # disable automatic streaming
+        wait=False,
     )
     experiment.show()
     sys.exit(app.exec_())

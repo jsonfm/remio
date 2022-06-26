@@ -144,7 +144,7 @@ class Camera(Emitter):
 
     def __del__(self):
         self.stop()
-    
+
     def __read(self):
         """Call opencv API for read a frame"""
         if self.isConnected():
@@ -153,8 +153,9 @@ class Camera(Emitter):
                 return frame
 
     def isThreaded(self):
+        """Checks if camera is running on a separate thread."""
         return self.running.is_set()
-    
+
     def createBackground(
         self,
         text: str = "Device not available",
@@ -349,9 +350,13 @@ class Camera(Emitter):
         else:
             return self.background
 
-    def jpeg(self, base64: bool = False, 
-        quality: int = None, colorspace: str = None,
-        colorsubsampling: str = None, fastdct: bool = True
+    def jpeg(
+        self,
+        base64: bool = False,
+        quality: int = None,
+        colorspace: str = None,
+        colorsubsampling: str = None,
+        fastdct: bool = True,
     ) -> Union[bytes, str]:
         """Returns a frame on jpeg format(bytes or base64 string).
         Args:
@@ -366,7 +371,7 @@ class Camera(Emitter):
                             speeds up encoding by 4-5% for a minor loss in quality
         """
         return self.encoder.encode(
-            frame=self.read(), 
+            frame=self.read(),
             base64=base64,
             quality=quality,
             colorspace=colorspace,

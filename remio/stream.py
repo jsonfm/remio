@@ -36,11 +36,7 @@ class SocketStreamer:
         self.fps = fps
         self.endpoint = endpoint
         self.enabled = enabled
-        self.thread = Thread(
-            target=self.run, 
-            name="stream-thread", 
-            daemon=True
-        )
+        self.thread = Thread(target=self.run, name="stream-thread", daemon=True)
         self.running = Event()
         self.pauseEvent = Event()
         self.streamLock = Lock()

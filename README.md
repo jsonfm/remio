@@ -49,7 +49,7 @@ After choose an option for install remio, for example using pip:
 ```
 pip install remio
 ```
-Or if you prefere, cloning the repository:
+Or if you prefer, clone the repository:
 ```
 git clone https://github.com/Hikki12/remio
 

@@ -9,7 +9,9 @@ class TestCameras(unittest.TestCase):
         self.camera = Camera(src=0)
 
     def test_read_camera(self):
-        assert 3 == 3, "Error"
+        time.sleep(1)
+        frame = self.camera.read()
+        time.sleep(1)
 
     def test_single_camera(self):
         assert (

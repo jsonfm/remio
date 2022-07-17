@@ -1,9 +1,10 @@
 <div align="center"><h1> RemIO </h1></div>
 <div align="center">
 
-[Documentation](https://hikki12.github.io/remio/)
+[Documentation][docs] &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; [License](#copyright)
 
 [![Code Style][black-badge]][black]
+[![PyPi version][pypi-badge]][pypi] 
 
 </div>
 
@@ -201,11 +202,17 @@ You could server your camera image with the MJPEG server, with a few lines:
 """A simple MJPEG."""
 from remio import Camera, MJPEGServer
 
-# Initialize camera device
-camera = Camera(src=0, fps=15, size=[800, 600], flipX=True)
 
-# Start camera on another thread (Optional)
-camera.start()
+encoderParams = {
+    "quality": 90,
+    "colorspace": "bgr",
+    "colorsubsampling": "422",
+    "fastdct": True,
+}
+
+
+# Initialize camera device
+camera = Camera(src=0, fps=15, size=[800, 600], flipX=True, encoderParams=encoderParams)
 
 # Configure MJPEG Server
 server = MJPEGServer(
@@ -227,17 +234,27 @@ except KeyboardInterrupt:
 ## Examples
 You could see more examples [here](https://github.com/Hikki12/remio/tree/master/examples).
 
+
 Resources
 ---------
 - [Changelog](./CHANGELOG.md)
+
+## Copyright
+**Copyright © hikki12 2022**
+This library is released under the **[Apache 2.0 License][license]**.
+
 
 <!--
 External URLs
 -->
 [black]: https://github.com/psf/black
+[pypi]: https://pypi.org/project/remio/
 
+
+[docs]: https://hikki12.github.io/remio/
+[license]: https://github.com/Hikki12/remio/blob/master/LICENSE
 <!--
 Badges
 -->
 [black-badge]:https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=github
-
+[pypi-badge]:https://img.shields.io/pypi/v/remio?style=for-the-badge&logo=pypi

@@ -4,8 +4,8 @@
 [Documentation][docs] &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; [License](#copyright)
 
 [![Code Style][black-badge]][black]
+[![Codecov branch][codecov]][codecov-repo]
 [![PyPi version][pypi-badge]][pypi] 
-
 </div>
 
 # Table of Contents
@@ -253,8 +253,10 @@ External URLs
 
 [docs]: https://hikki12.github.io/remio/
 [license]: https://github.com/Hikki12/remio/blob/master/LICENSE
+[codecov-repo]:https://codecov.io/gh/Hikki12/remio
 <!--
 Badges
 -->
-[black-badge]:https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=github
-[pypi-badge]:https://img.shields.io/pypi/v/remio?style=for-the-badge&logo=pypi
+[black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=github
+[pypi-badge]: https://img.shields.io/pypi/v/remio?style=for-the-badge&logo=pypi
+[codecov]: https://img.shields.io/codecov/c/gh/Hikki12/remio?logo=codecov&style=for-the-badge&token=RQZV5HOILN

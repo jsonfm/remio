@@ -1,0 +1,14 @@
+codecov:
+  require_ci_to_pass: true
+  branch: testing
+
+coverage:
+  status:
+    patch: off
+    project:
+      default:
+        threshold: 5%
+        branches: 
+          - testing
+        if_ci_failed: error
+        

@@ -240,7 +240,7 @@ Resources
 - [Changelog](./CHANGELOG.md)
 
 ## Copyright
-**Copyright © hikki12 2022**
+**Copyright © hikki12 2022** <br/>
 This library is released under the **[Apache 2.0 License][license]**.
 
 

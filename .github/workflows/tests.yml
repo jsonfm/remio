@@ -19,6 +19,10 @@ jobs:
       - name: Run tests and collect coverage
         run: pytest --cov app
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+        run: | 
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          find . -iregex "codecov.*"
+          chmod +x codecov 
+          ./codecov -t ${CODECOV_TOKEN}

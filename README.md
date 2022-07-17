@@ -1,4 +1,4 @@
-<div align="center"><h1> RemIO </h1></div>
+<div align="center"><h1> REMIO </h1></div>
 <div align="center">
 
 [Documentation][docs] &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; [License](#copyright)

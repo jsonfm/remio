@@ -18,7 +18,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="remio",
     packages=["remio"],
-    version="0.1.1",
+    version="0.1.2",
     description="A library for managing concurrent socketio, cv2, and pyserial processes. Useful for making robots or devices with Arduinos and Raspberry Pi.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -4,7 +4,7 @@
 El presente módulo se encarga de gestionar la lectura de imágenes provenientes de una o múltiples cámaras,  de hilos (threads). Para ello emplea el API de python-opencv.
 
 ## Cámara simple
-Cada dispositivo de imagen es gestionado por una instancia de la clase `Camera`, cuya documentación y parámetros se puede consultar [aquí](/remio/camera/single).
+Cada dispositivo de imagen es gestionado por una instancia de la clase `Camera`, cuya documentación y parámetros se pueden consultar [aquí](/remio/camera/single).
 ```python
 """Single simple camera example."""
 import time

@@ -12,6 +12,7 @@ encoderParams = {
 
 
 def read_frame():
+    """Generates a random frame"""
     return np.random.randint(255, size=(1024, 720, 3), dtype=np.uint8)
 
 

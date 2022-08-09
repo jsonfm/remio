@@ -154,7 +154,9 @@ class Serial(Emitter):
             print(f"-> Serial - {self.name} :: {e}")
 
     def dictToJson(self, message: dict = {}) -> str:
-        """Converts a dictionary to a json str."""
+        """Converts a dictionary to a json str. If fails it will return the input."""
+        if not isinstance(message, dict):
+            return message
         try:
             return json.dumps(message)
         except Exception as e:

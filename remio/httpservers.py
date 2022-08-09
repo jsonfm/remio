@@ -4,6 +4,8 @@ from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 
+from remio.network import get_ipv4
+
 
 class Handler(BaseHTTPRequestHandler):
     """Custom HTTP handler for streaming video on MJPEG format."""
@@ -106,8 +108,11 @@ class MJPEGServer:
         try:
             if display_url:
                 print(
-                    f"MJPEG server running on http://{self.ip}:{self.port}{self.endpoint}"
+                    f">> localhost :: MJPEG server running on http://{self.ip}:{self.port}{self.endpoint}"
                 )
+                if '0.0.0.0' in self.ip:
+                    for ip in get_ipv4():
+                        print(f">> local network :: MJPEG server running on http://{ip}:{self.port}{self.endpoint}")
 
             if start_camera:
                 self.camera.start()

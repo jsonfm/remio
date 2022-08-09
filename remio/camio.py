@@ -420,25 +420,40 @@ class Camera(Emitter):
                 self.background = self.createBackground(size=self.size)
             return self.background
 
-    def setSpeed(self, fps: Union[int, None] = 10):
+    def setSpeed(self, fps: Union[int, float, None] = 10):
         """Updates the frames per second (fps).
         Args:
             fps: frames per sec. If no parameter is passed, auto speed will be set.
         """
-        self.fps = fps
-        if self.fps is not None:
-            self.defaultDelay = 1 / self.fps
-            self.delay = self.defaultDelay
+        if not isinstance(fps,(int, float, type(None))):
+            raise ValueError('FPS must be int or float')
 
-    def setProcessing(self, processing: Callable = None, **kwargs):
+        if fps is None:
+            fps = 10
+
+        if fps <= 0:
+            raise ValueError('FPS must be > 0')
+
+        self.fps = fps
+        self.defaultDelay = 1 / self.fps
+        self.delay = self.defaultDelay
+
+    def setProcessing(self, processing: Callable = None, **kwargs) -> bool:
         """Updates the processing function and its params (kwargs).
 
         Args:
             processing: a function for make some image processing
             kwargs: kwargs (params) for the processing function
+    
+        Returns:
+            error: True or False
         """
-        self.processing = processing
-        self.processingParams = kwargs
+        error = False
+        if callable(processing):
+            self.processing = processing
+            self.processingParams = kwargs
+            return error
+        return not error
 
     def stop(self):
         """Stops the read loop."""

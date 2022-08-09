@@ -85,7 +85,7 @@ class MJPEGEncoder:
             jpeg: encoded image as JPEG (JFIF) data or base64 string
 
         """
-        if frame is not None:
+        if frame is not None and isinstance(frame, np.ndarray):
             colorspace = self.colorspace if colorspace is None else colorspace
 
             if frame.ndim == 2:

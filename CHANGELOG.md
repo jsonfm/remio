@@ -13,3 +13,6 @@
 
 **Release 0.1.1** - 2022-06-26
 - Improved MJPEG Server
+
+**Release 0.1.2** - 2022-06-26
+- Added netifaces dependency to get IP address on local network with MJPEG Server

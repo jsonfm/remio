@@ -15,6 +15,9 @@
 4. [Development](#development)
 5. [Simplejpeg API](#simplejpeg-api)
 6. [Simple MJPEG Server](#simple-mjpeg-server)
+7. [Single Camera API (Multithread)](#single-camera-api)
+8. [Single Camera API (not Multithread)](#single-camera-api-not-multithread)
+8. [Background Processing API](#background-processing-api)
 7. [Multiple Cameras API](#multiple-cameras-api)
 8. [Multiple Serial API](#multiple-serial-api)
 9. [Examples](#examples)
@@ -69,6 +72,119 @@ pip install .
 If you are a devolper, install the library as follows:
 ```
 pip install -e .
+```
+
+<!-- ----------------------------------------- -->
+## Single Camera API
+A `Camera` instance creates a background loop for reading and processing frames when you call `start()` method.
+
+```py
+import time
+from remio import Camera
+
+# Initialize Single Camera device
+camera = Camera(name="webcam", src=0, size=[400, 400])
+camera.start()
+
+# Also you could use
+# camera = Camera(name="webcam", src=0, size=[400, 400]).start()
+
+
+while True:
+    print("Doing some other tasks...")
+    time.sleep(2)
+```
+
+## Single Camera API not Multithread
+But If you prefer you could manage reading and procesing on main thread, for that, you must change `start()` method by `loadDevice()`.
+```py
+import time
+from remio import Camera
+
+# Initialize Single Camera device
+camera = Camera(name="webcam", src=0, size=[400, 400])
+
+# Loads camera device but doesn't start background read loop
+camera.loadDevice()
+
+while True:
+    # Now the processing ocurrs on the main thread.
+    frame = camera.read()
+    if frame is not None:
+        print("A frame is available!")
+    time.sleep(1 /10)
+
+```
+
+<!-- ----------------------------------------- -->
+## Background Processing API
+```py
+
+import time
+import cv2
+from remio import Camera
+
+
+def processing(frame, *args, **kwargs):
+    """Applies some image processing.
+
+    Args:
+        frame: a numpy array
+    """
+
+    if 'color' in kwargs: # if you pass a param named `color` it will print it
+        print(kwargs['color'])
+
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return frame
+
+
+# Intialize Camera manager
+camera = Camera(src=0, size=[600, 400])
+
+# set processing function passing to it some params
+camera.setProcessing(processing, color='red')
+
+# Also you could do
+# camera.setProcessing(processing)
+
+# Start device(s) read loop on background
+camera.start()
+
+# Set a FPS speed to display image(s)
+FPS = 20
+T = 1 / FPS # Sampling period
+
+
+while True:
+
+    t0 = time.time()
+
+    frame = camera.read()
+    camera.clearFrame()  # to avoid repeated frames, this line it's optional
+
+    if frame is not None:
+        cv2.imshow("webcam1", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+    t1 = time.time()
+
+    readtime = t1 - t0 # reading and display time
+
+    # Get a fixed delay value, where sampling period should be T = readtime + delay
+    delay = abs(T - readtime)
+    time.sleep(delay)
+
+
+# Close all Windows
+cv2.destroyAllWindows()
+
+# Stop all Running devices
+camera.stop()
+
+
 ```
 
 <!-- ----------------------------------------- -->
@@ -196,7 +312,7 @@ while True:
     time.sleep(1/10)
 ```
 <!-- ----------------------------------------- -->
-## A simple MJPEG Server
+## Simple MJPEG Server
 You could server your camera image with the MJPEG server, with a few lines:
 ```python
 """A simple MJPEG."""

@@ -5,6 +5,7 @@ from remio.serialio import Serial, Serials
 
 class TestSerials(unittest.TestCase):
     """Tests serials."""
+
     def setUp(self):
         devices = {
             "arduino1": {
@@ -14,7 +15,7 @@ class TestSerials(unittest.TestCase):
             "arduino2": {
                 "port": "COM7",
                 "baudrate": 9600,
-            }
+            },
         }
         self.serial = Serials(devices=devices)
 
@@ -28,7 +29,7 @@ class TestSerials(unittest.TestCase):
 
         failserial = self.serial.getDevice("failserial")
         assert isinstance(failserial, type(None)), "failserial should be None"
-    
+
     def test_get_device2(self):
         """Tests for get devices using key id"""
         serial1 = self.serial["arduino1"]

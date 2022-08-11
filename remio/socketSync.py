@@ -44,7 +44,7 @@ class CustomSocketIO(Client):
         return not self.connected
 
     def toogle(self, value: bool = False):
-        """switchs socketio. """
+        """switchs socketio."""
         if value:
             self.start()
         else:

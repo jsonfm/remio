@@ -85,8 +85,11 @@ class Serial(Emitter):
         """Ceturns the current port device."""
         return self.serial.port
 
-    def setPort(self, port: str = None):
+    def setPort(self, port: Union[str, None] = None):
         """Updates the port device value."""
+        if not isinstance(port, (str, type(None))):
+            raise ValueError("port should be None or str")
+
         if port is not None:
             self.serial.close()
             self.serial.port = port
@@ -206,6 +209,10 @@ class Serial(Emitter):
 
     def checkSerialPorts(self, dt: Union[int, float]):
         """Monitors if there are changes in the serial devices."""
+
+        if not isinstance(dt, (int, float)):
+            raise ValueError("dt should be a number int or float.")
+
         if self.portsRefreshTime > 0:
             self.time += dt
             if self.time >= self.portsRefreshTime:
@@ -317,7 +324,6 @@ class Serials:
         """
         if deviceName in self.devices:
             return self.devices[deviceName]
-
 
     def startAll(self):
         """Starts all serial devices"""

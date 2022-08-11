@@ -110,9 +110,11 @@ class MJPEGServer:
                 print(
                     f">> localhost :: MJPEG server running on http://{self.ip}:{self.port}{self.endpoint}"
                 )
-                if '0.0.0.0' in self.ip:
+                if "0.0.0.0" in self.ip:
                     for ip in get_ipv4():
-                        print(f">> local network :: MJPEG server running on http://{ip}:{self.port}{self.endpoint}")
+                        print(
+                            f">> local network :: MJPEG server running on http://{ip}:{self.port}{self.endpoint}"
+                        )
 
             if start_camera:
                 self.camera.start()

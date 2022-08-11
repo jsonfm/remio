@@ -110,9 +110,11 @@ class MJPEGEncoder:
 
             return jpeg
 
-    def multipleEncode(self, frames: dict):
+    def multipleEncode(self, frames: Union[dict, list], *args, **kwargs):
         """Encodes a dict with numpy arrays (frames)."""
         if isinstance(frames, dict):
-            return {k: self.encode(v) for k, v in frames.items()}
+            return {k: self.encode(v, *args, **kwargs) for k, v in frames.items()}
+        elif isinstance(frames, list):
+            return [self.encode(v, *args, **kwargs) for v in frames]
         else:
             return self.encode(frames)

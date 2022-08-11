@@ -11,7 +11,7 @@ def read_frame():
 
 class TestCamera(unittest.TestCase):
     def setUp(self):
-        self.camera = Camera(src=1, reconnectDelay=.5)
+        self.camera = Camera(src=1, reconnectDelay=0.5)
 
     def test_load_device(self):
         """Test for load devices"""
@@ -39,7 +39,7 @@ class TestCamera(unittest.TestCase):
         """Tests for update method."""
         self.camera.update()
         assert self.camera.frame is None, "camera frame is not None"
-        
+
     def test_jpeg(self):
         """Test jpeg encoder method."""
         jpeg = self.camera.jpeg()
@@ -57,28 +57,35 @@ class TestCamera(unittest.TestCase):
 
     def test_create_background(self):
         """Tests for create a background."""
-        assert type(self.camera.createBackground()) == np.ndarray, "Camera is not creating a numpy background"
+        assert (
+            type(self.camera.createBackground()) == np.ndarray
+        ), "Camera is not creating a numpy background"
 
     def test_enable_background(self):
         """Tests for enable background."""
         self.camera.enableBackground()
-        assert type(self.camera.background) == np.ndarray, "Camera is not creating a numpy background"
+        assert (
+            type(self.camera.background) == np.ndarray
+        ), "Camera is not creating a numpy background"
 
     def test_disable_background(self):
         """Tests for disable background."""
         self.camera.disableBackground()
-        assert isinstance(self.camera.background, type(None)), "Camera background is not disable (None)"
+        assert isinstance(
+            self.camera.background, type(None)
+        ), "Camera background is not disable (None)"
 
     def test_set_processing(self):
         """Tests for set processing function"""
+
         def callback():
             print("I'm a test callback")
-            
+
         self.camera.setProcessing(callback)
 
         with pytest.raises(ValueError):
-            self.camera.setProcessing('not valid input')
-        
+            self.camera.setProcessing("not valid input")
+
     def test_set_speed(self):
         """Tests for set speed (set FPS) function."""
         self.camera.setSpeed(10)
@@ -87,7 +94,7 @@ class TestCamera(unittest.TestCase):
             self.camera.setSpeed(0)
 
         with pytest.raises(ValueError):
-            self.camera.setSpeed('a')
+            self.camera.setSpeed("a")
 
     def test_get_frame64(self):
         """Tests for get frame on base64 format."""
@@ -98,7 +105,9 @@ class TestCamera(unittest.TestCase):
         """Test for clear frame"""
         self.camera.clearFrame()
         assert self.camera.frame is None, "Camera frame isn't being clear"
-        assert self.camera.frame64 is None, "Camera frame on base64 format(frame64)  isn't being clear"
+        assert (
+            self.camera.frame64 is None
+        ), "Camera frame on base64 format(frame64)  isn't being clear"
 
     def test_preprocess(self):
         """Tests for processing functions."""
@@ -115,7 +124,9 @@ class TestCamera(unittest.TestCase):
         """Tests for has processing function."""
         assert self.camera.hasProcessing() == False, "camera has a processing function"
         self.camera.setProcessing(lambda frame: frame)
-        assert self.camera.hasProcessing() == True, "camera has not a processing function"
+        assert (
+            self.camera.hasProcessing() == True
+        ), "camera has not a processing function"
 
     def test_set_pause(self):
         """Tests for set pause method."""
@@ -123,13 +134,11 @@ class TestCamera(unittest.TestCase):
         self.camera.setPause(False)
 
         with pytest.raises(ValueError):
-            self.camera.setPause('a')
-        
+            self.camera.setPause("a")
+
         with pytest.raises(ValueError):
             self.camera.setPause(2)
 
-
-    
     def test_stop_camera(self):
         """Stops camera"""
         self.camera.stop()

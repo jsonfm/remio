@@ -318,7 +318,7 @@ class Camera(Emitter):
         """Tries to read a frame from the camera."""
         if self.device is None:
             return
-            
+
         self.readEvent.clear()
         self.readLock.acquire()
 
@@ -431,14 +431,14 @@ class Camera(Emitter):
         Args:
             fps: frames per sec. If no parameter is passed, auto speed will be set.
         """
-        if not isinstance(fps,(int, float, type(None))):
-            raise ValueError('FPS must be int or float')
+        if not isinstance(fps, (int, float, type(None))):
+            raise ValueError("FPS must be int or float")
 
         if fps is None:
             fps = 10
 
         if fps <= 0:
-            raise ValueError('FPS must be > 0')
+            raise ValueError("FPS must be > 0")
 
         self.fps = fps
         self.defaultDelay = 1 / self.fps
@@ -450,7 +450,7 @@ class Camera(Emitter):
         Args:
             processing: a function for make some image processing
             kwargs: kwargs (params) for the processing function
-    
+
         Returns:
             error: True or False
         """

@@ -5,14 +5,7 @@ from remio.camio import Camera, Cameras
 
 class TestCamera(unittest.TestCase):
     def setUp(self):
-        devices = {
-            "cam1": {
-                "src": 0
-            },
-            "cam2": {
-                "src": 1
-            }
-        }
+        devices = {"cam1": {"src": 0}, "cam2": {"src": 1}}
         self.camera = Cameras(devices=devices)
 
     def test_get_device(self):
@@ -25,7 +18,7 @@ class TestCamera(unittest.TestCase):
 
         failcam = self.camera.getDevice("failcam")
         assert isinstance(failcam, type(None)), "failcam should be None"
-    
+
     def test_get_device2(self):
         """Tests for get devices using key id"""
         camera1 = self.camera["cam1"]
@@ -66,5 +59,3 @@ class TestCamera(unittest.TestCase):
         """Tests for getFrameOf."""
         frame = self.camera.getFrameOf("cam1")
         assert type(frame) == type(None), "frame should be None"
-
-    

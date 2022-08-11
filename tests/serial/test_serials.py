@@ -1,6 +1,6 @@
 import unittest
 import pytest
-from remio import Serial, Serials
+from remio.serialio import Serial, Serials
 
 
 class TestSerials(unittest.TestCase):

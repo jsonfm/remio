@@ -1,6 +1,6 @@
 import unittest
 import pytest
-from remio import Camera, Cameras
+from remio.camio import Camera, Cameras
 
 
 class TestCamera(unittest.TestCase):

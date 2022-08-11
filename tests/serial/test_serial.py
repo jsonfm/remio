@@ -1,5 +1,5 @@
 import unittest
-from remio import Serial
+from remio.serialio import Serial
 
 
 class TestCamera(unittest.TestCase):

@@ -11,7 +11,7 @@ def read_frame():
 
 class TestCamera(unittest.TestCase):
     def setUp(self):
-        self.camera = Camera(src=1)
+        self.camera = Camera(src=1, reconnectDelay=.5)
 
     def test_load_device(self):
         """Test for load devices"""
@@ -35,6 +35,11 @@ class TestCamera(unittest.TestCase):
         assert not self.camera.isConnected(), "Camera should not be open"
         assert frame is None, "camera should not read any frame when it's off"
 
+    def test_update(self):
+        """Tests for update method."""
+        self.camera.update()
+        assert self.camera.frame is None, "camera frame is not None"
+        
     def test_jpeg(self):
         """Test jpeg encoder method."""
         jpeg = self.camera.jpeg()
@@ -101,6 +106,30 @@ class TestCamera(unittest.TestCase):
         new = self.camera.preprocess(frame)
         assert type(new) == np.ndarray, "Preprocess is not returning a numpy array"
 
+    def test_get_processing_params(self):
+        """Tests for get processing params"""
+        params = self.camera.getProcessingParams()
+        assert type(params) == dict, "Processing params is not a dict"
+
+    def test_has_processing(self):
+        """Tests for has processing function."""
+        assert self.camera.hasProcessing() == False, "camera has a processing function"
+        self.camera.setProcessing(lambda frame: frame)
+        assert self.camera.hasProcessing() == True, "camera has not a processing function"
+
+    def test_set_pause(self):
+        """Tests for set pause method."""
+        self.camera.setPause(True)
+        self.camera.setPause(False)
+
+        with pytest.raises(ValueError):
+            self.camera.setPause('a')
+        
+        with pytest.raises(ValueError):
+            self.camera.setPause(2)
+
+
+    
     def test_stop_camera(self):
         """Stops camera"""
         self.camera.stop()

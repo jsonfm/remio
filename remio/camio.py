@@ -278,6 +278,9 @@ class Camera(Emitter):
 
     def setPause(self, value: bool = True):
         """Updates the pause/resume state."""
+        if not isinstance(value, bool):
+            raise ValueError("value should be a bool")
+
         if value:
             self.pause()
         else:
@@ -313,6 +316,9 @@ class Camera(Emitter):
 
     def update(self):
         """Tries to read a frame from the camera."""
+        if self.device is None:
+            return
+            
         self.readEvent.clear()
         self.readLock.acquire()
 

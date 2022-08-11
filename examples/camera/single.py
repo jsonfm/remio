@@ -34,15 +34,17 @@ while True:
     camera.clearAllFrames()  # to avoid repeated frames
 
     if frame is not None:
-        cv2.imshow("webcam1", frame)
+        cv2.imshow("webcam", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
     t1 = time.time()
 
-    # Get a fixed delay value (t1 - t0) + delay = T
-    delay = abs(T - (t1 - t0))
+    readtime = t1 - t0 # reading and display time
+
+    # Get a fixed delay value, where sampling period should be T = readtime + delay
+    delay = abs(T - readtime)
     time.sleep(delay)
 
 

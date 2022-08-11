@@ -293,8 +293,7 @@ class Serials:
         return len(self.devices)
 
     def __getitem__(self, key):
-        if key in self.devices:
-            return self.devices[key]
+        return self.devices[key]
 
     def hasDevices(self):
         """Checks if there is some serial device on list."""
@@ -309,6 +308,16 @@ class Serials:
             self.stopAll()
         devices = list(set(devices))
         self.devices = [Serial(port=name, *args, **kwargs) for name in devices]
+
+    def getDevice(self, deviceName: str = "default") -> Union[Serial, None]:
+        """Returns a specific serial device.
+
+        Args:
+            deviceName: serial device name.
+        """
+        if deviceName in self.devices:
+            return self.devices[deviceName]
+
 
     def startAll(self):
         """Starts all serial devices"""

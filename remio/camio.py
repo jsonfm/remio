@@ -448,12 +448,11 @@ class Camera(Emitter):
         Returns:
             error: True or False
         """
-        error = False
         if callable(processing):
             self.processing = processing
             self.processingParams = kwargs
-            return error
-        return not error
+        else:
+            raise ValueError("Processing should be callable")
 
     def stop(self):
         """Stops the read loop."""
@@ -525,7 +524,7 @@ class Cameras:
             device = self.devices[deviceName]
             device.stop()
 
-    def getDevice(self, deviceName: str = "default"):
+    def getDevice(self, deviceName: str = "default") -> Union[Camera, None]:
         """Returns a specific camera device.
 
         Args:

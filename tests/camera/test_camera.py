@@ -1,7 +1,6 @@
 import numpy as np
 import unittest
 import pytest
-import time
 from remio import Camera
 
 
@@ -10,6 +9,7 @@ class TestCamera(unittest.TestCase):
         self.camera = Camera(src=0)
 
     def test_get_name(self):
+        """Test get name method."""
         name = self.camera.getName()
         assert name == "default", "default name is not being applied correctly"
 
@@ -19,14 +19,15 @@ class TestCamera(unittest.TestCase):
         assert frame is None, "camera should not read any frame when it's off"
 
     def test_jpeg(self):
+        """Test jpeg encoder method."""
         jpeg = self.camera.jpeg()
         assert jpeg is None, "jpeg method not returning None when camera is off"
 
     def test_single_camera(self):
+        """Test single camera"""
         assert (
             self.camera.isConnected() == False
         ), "Couldn't connect with the camera device."
-
 
     def test_is_threaded(self):
         """Checks if camera is threaded or not."""
@@ -41,13 +42,13 @@ class TestCamera(unittest.TestCase):
         def callback():
             print("I'm a test callback")
             
-        error = self.camera.setProcessing(callback)
-        assert error == False, "Error should be false, because procesing it's callable"
+        self.camera.setProcessing(callback)
 
-        error = self.camera.setProcessing('not valid input')
-        assert error == True, "Error should be True because procesing input param it's not valid"
-
+        with pytest.raises(ValueError):
+            self.camera.setProcessing('not valid input')
+        
     def test_set_speed(self):
+        """Tests for set speed (set FPS) function."""
         self.camera.setSpeed(10)
 
         with pytest.raises(ValueError):
@@ -56,6 +57,11 @@ class TestCamera(unittest.TestCase):
         with pytest.raises(ValueError):
             self.camera.setSpeed('a')
 
+    def test_get_frame64(self):
+        """Tests for get frame on base64 format."""
+        b64 = self.camera.getFrame64()
+        assert isinstance(b64, type(None)), "b64 frame should be None"
 
     def test_stop_camera(self):
+        """Stops camera"""
         self.camera.stop()

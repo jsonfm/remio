@@ -15,6 +15,7 @@ class CustomSocketIO(Client):
             print("Socket:: ", e)
 
     def start(self):
+        """Starts socketio connection"""
         if self.address is not None:
             try:
                 self.connect(self.address, wait=True)
@@ -22,12 +23,14 @@ class CustomSocketIO(Client):
                 print("socket:: ", e)
 
     def emit(self, *args, **kwargs):
+        """custom emit method."""
         try:
             super().emit(*args, **kwargs)
         except Exception as e:
             print("socket:: ", e)
 
     def on(self, *args, **kwargs):
+        """custom on method."""
         event = args[0]
         handler = args[1]
         if event == "connection":
@@ -37,9 +40,11 @@ class CustomSocketIO(Client):
             super().on(*args, **kwargs)
 
     def isConnected(self):
+        """Checks if socket it's connected"""
         return not self.connected
 
-    def toogle(self, value: bool):
+    def toogle(self, value: bool = False):
+        """switchs socketio. """
         if value:
             self.start()
         else:

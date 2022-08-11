@@ -118,6 +118,7 @@ while True:
 
 <!-- ----------------------------------------- -->
 ## Background Processing API
+You could set a processing function which will run on background. Use `setProcessing()` method for that.
 ```py
 
 import time
